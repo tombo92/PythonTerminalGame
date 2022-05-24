@@ -398,7 +398,7 @@ def encode_text(plaintext: str, key: str) -> str:
 
 
 def main():
-    game = Game(level=4)
+    game = Game(level=0)
     game.start()
     print("bye bye bye, bye bye (in a backsstreet boys way...)")
 
