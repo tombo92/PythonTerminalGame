@@ -21,7 +21,7 @@ from icons import Icons
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
-
+VERSION = "1.0.0"
 # =========================================================================== #
 #  SECTION: Class definitions
 # =========================================================================== #
@@ -95,7 +95,7 @@ class Game:
                     "\t 2. After you die you have to start from the beginning (yes, you heard right: reincarnation).",
                     "\t 3. Sometimes you have to press enter to continue your journey.",
                     "\t 4. Most of the time it is enough to enter the first letter of the possible answers.",
-                    "\t 5. All necessary information are automatically copied into the clipboard."
+                    "\t 5. All necessary information are automatically copied into the clipboard.",
                     "\t 6. Don't blame our perfect creator (yes, praise Tom) for your failur.",
                     "\t 7. Be smart and persistant to receive your reward."], delay=2)
                 while 1:
@@ -417,7 +417,9 @@ def main():
 #  SECTION: Main Body
 # =========================================================================== #
 if __name__ == '__main__':
+    print(f"DeepIntoTheForestGame | VERSION: {VERSION}")
     print(Icons.level0.value)
+
     main()
 
 
