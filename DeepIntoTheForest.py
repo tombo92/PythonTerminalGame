@@ -57,6 +57,18 @@ class Player:
     def climb_down(self):
         print(f"{self.name} climbs down the tree")
 
+    def jump_left(self):
+        print(f"{self.name} jumps to the left")
+
+    def jump_right(self):
+        print(f"{self.name} jumps to the right")
+
+    def roll(self):
+        print(f"{self.name} does a perfect roll (every gymnast would be proud!)")
+
+    def kick(self):
+        print(f"{self.name} kicks to the front")
+
     def reincarnate(self):
         print(f"{self.name} you came back from the dead")
         self._is_alive = True
@@ -106,7 +118,7 @@ class Game:
                             break
                         self._kill_player_and_ask_for_restart()
                         break
-            elif self.level == 1 or self.level == 6:
+            elif self.level == 1 or self.level == 7:
                 if self.level == 1:
                     print(Icons.level1.value)
                     time.sleep(1)
@@ -122,7 +134,7 @@ class Game:
                             print('You fool that was the way out of the forest. You are leaving the forest without the treasure and die in poverty (some decades later, but you die)')
                             self._kill_player_and_ask_for_restart()
                             break
-                        elif answer.lower() in ['left', 'l'] and self.level == 6:
+                        elif answer.lower() in ['left', 'l'] and self.level == 7:
                             time.sleep(2)
                             print(f'{self.player.name} you made it ... really ... you have escaped the forest')
                             time.sleep(4)
@@ -144,7 +156,7 @@ class Game:
                             input("[Press a key to exit the game]")
                             return
                         elif answer.lower() in ['right', 'r']:
-                            if self.level == 6:
+                            if self.level == 7:
                                 print_lines(['going into the dark...', "risking your live ... AGAIN ...", "GOOD CHOICE!!!"], 1)
                             else:
                                 print_lines(['going into the dark...', "risking your live...", "GOOD CHOICE!!!"], 1)
@@ -272,19 +284,62 @@ class Game:
                             print(f"{self.player.name} the path you've choosen was too dangerous and you fell to the ground .... you know what that means ...")
                             self._kill_player_and_ask_for_restart()
                     break
-
-
             elif self.level == 5:
                 print(Icons.level5.value)
                 time.sleep(1)
                 print_lines(["That was kind of fun, wasn't it!?", "NOOOO!!! you almost died and you are still in danger in that godforsaken forest ... what is FUNNY about that?",
                              "Let's continue, the treasure must be close ... hopefully.", "The forest is really dense again and almost all the light is absorbed by the treetops.",
                              "No sounds of birds or other animals, not even mosquitos. (but let's not be sad about that)", f"But you can feel that something is watching you, {self.player.name}.",
-                             "The trees are like giant pillars of shadows and you get more and more the feeling you should leave that place as soon as possible."], 4)
+                             "The trees are like giant pillars of shadows and you get more and more the feeling you should leave that place as soon as possible.\n"], 4)
+                time.sleep(2)
+                print_lines(['You should have listened to your gut feeling.', 'Narsty furry creatures have surrounded you.', '\ttheir teeth are sharp ...', '\ttheir claws are even sharper\n\n',
+                             Icons.monster.value, 'RUUUUUUUUuuuuhuuuunN ...', '...'], 3)
                 input()
+                print_lines(['You are faster than these \"vampire wookies\" but more and more are following you.',
+                            '\tWhen they try to attack you from the left [L] -> you are jumping to the right [r]',
+                            '\tWhen they try to attack you from the right [R] -> you are jumping to the left [l]',
+                            '\tWhen they try to attack by jumping out of the trees [T] -> you are doing a forward roll [f]',
+                            '\tWhen they try to attack from the front [F] -> you are kicking them directly into their ugly face [k]'])
+                print("After succesfully dodging the first attacks you recognizing a pattern: ")
+                perfect_move, attack_pattern = self._create_attack_pattern(1)
+                print(attack_pattern)
+                addToClipBoard(str(attack_pattern))
+                while 1:
+                    answer = input(f"What will be your next move? [r, l, f, k] ")
+                    if is_input_valid(answer, ['r', 'l', 'f', 'k']):
+                        time.sleep(3)
+                        if answer == 'r':
+                            self.player.jump_right()
+                        elif answer == 'f':
+                            self.player.roll()
+                        elif answer == 'l':
+                            self.player.jump_left()
+                        elif answer == 'k':
+                            self.player.kick()
+                        if answer == perfect_move:
+                            time.sleep(3)
+                            print("Perfect move ... it is official, you are smarter than these beasts (you probaply have noticed, almost none of them went to school)")
+                        else:
+                            time.sleep(3)
+                            print("Why did you even try to find the pattern, when you are not smart enough to forcast the next move?")
+                            time.sleep(3)
+                            print("WHY????")
+                            time.sleep(3)
+                            print("The monsters are tearing you into pieces ...")
+                            time.sleep(3)
+                            self._kill_player_and_ask_for_restart()
+                        break
+                clear_terminal()
+                print('Yeah')
+                input()
+
+
+            elif self.level == 6:
+                print(Icons.level6.value)
+                time.sleep(1)
                 print("After a perceived infinity prisoned here you are entering the first forest clearing since you entered.")
                 time.sleep(3)
-                print("Even this place of light feels not really save. Eyes are staring at you out of the surounding darkness.")
+                print("Even this place of light feels not really save. More eyes are staring at you out of the surrounding darkness.")
                 time.sleep(3)
                 print(f"{self.player.name} in the middle of this clearing you are finding a slab of stone with the following inscriptions.")
                 time.sleep(2)
@@ -365,6 +420,14 @@ class Game:
             total_survival_propability *= survival_propability
         return total_survival_propability
 
+    def _create_attack_pattern(self, number:int) -> tuple:
+        pattern_list_1 = [('l', ['L', 'L', 'R', 'L', 'L', 'T', 'R', 'R', 'F', 'R', 'R', 'L', 'L', 'L']),
+                          ('k', ['T', 'T', 'F', 'F', 'L', 'L', 'R','R', 'L', 'L', 'F', 'F', 'T', 'T']),
+                          ('r', ['R', 'T', 'T', 'L', 'L', 'L', 'F', 'F', 'L', 'L'])]
+        if number == 1:
+            return random.choice(pattern_list_1)
+
+
 
 # =========================================================================== #
 #  SECTION: Function definitions
@@ -408,7 +471,7 @@ def addToClipBoard(text):
 
 
 def main():
-    game = Game(level=0)
+    game = Game(level=5)
     game.start()
     print("bye bye bye, bye bye (in a backsstreet boys way...)")
 
