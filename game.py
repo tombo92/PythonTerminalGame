@@ -95,8 +95,9 @@ class Game:
                     "\t 2. After you die you have to start from the beginning (yes, you heard right: reincarnation).",
                     "\t 3. Sometimes you have to press enter to continue your journey.",
                     "\t 4. Most of the time it is enough to enter the first letter of the possible answers.",
-                    "\t 5. Don't blame our perfect creator (yes, praise Tom) for your failur.",
-                    "\t 6. Be smart and persistant to receive your reward."], delay=2)
+                    "\t 5. All necessary information are automatically copied into the clipboard."
+                    "\t 6. Don't blame our perfect creator (yes, praise Tom) for your failur.",
+                    "\t 7. Be smart and persistant to receive your reward."], delay=2)
                 while 1:
                     answer = input("Shall we start? [Yes/No] ")
                     if is_input_valid(answer, ['yes', 'no', 'y', 'n']):
@@ -139,6 +140,7 @@ class Game:
                                  "\t\tChoose two brave companions of your choice (e.g. Vicky and Tom) and take your family into the next adventure.",
                                  "\t\tThe next forest \"WALDHOCHSEILGARTEN JUNGFERNHEIDE\" is waiting for you ...\n\n",
                                  "\tPlease send a screenshot of this out into the world to start the preparation.\n\n"], 4)
+                            addToClipBoard(f"{self.player.name} conqueror of the forest! Team Awesome is proud of you")
                             input("[Press a key to exit the game]")
                             return
                         elif answer.lower() in ['right', 'r']:
@@ -152,7 +154,8 @@ class Game:
             elif self.level == 2:
                 print(Icons.level2.value)
                 time.sleep(1)
-                height = random.randint(50,100)
+                height = random.randint(50, 100)
+                addToClipBoard(str(height))
                 print(f"{self.player.name} you reached a ledge of {height} meters. There is only one way to get up there ...")
                 time.sleep(1)
                 print("You have to built stairs out of tree trunks.")
@@ -236,6 +239,7 @@ class Game:
                 best_choice_indices: list = []
                 best_choice_propability: float = 1
                 paths = self._create_path_array()
+                addToClipBoard(str(paths))
                 for i, path in enumerate(paths):
                     print(f"\t[{i+1}] \t: {path}")
                     p = self._calculate_probability_of_survival(path)
@@ -286,6 +290,7 @@ class Game:
                 time.sleep(2)
                 plaintext = "fünfhundertfünfzig minus siebenunddreissig mal vier plus achtzehn"
                 cipher = encode_text(plaintext, self.player.name)
+                addToClipBoard(cipher)
                 correct_answer = 550 - 37 * 4 + 18
                 print("\n" + "=" * (len(cipher) + 8))
                 print("||  " + cipher + "  ||")
@@ -397,6 +402,11 @@ def encode_text(plaintext: str, key: str) -> str:
     return cipher
 
 
+def addToClipBoard(text):
+    command = 'echo | set /p nul=' + text.strip() + '| clip'
+    os.system(command)
+
+
 def main():
     game = Game(level=0)
     game.start()
@@ -409,5 +419,6 @@ def main():
 if __name__ == '__main__':
     print(Icons.level0.value)
     main()
+
 
 
