@@ -19,6 +19,7 @@ from GeneralGame.helper_functions import (addToClipBoard, encode_text, get_indic
 from GeneralGame.icons import Icons
 from GeneralGame.riddle import Riddle
 
+
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
@@ -34,24 +35,17 @@ class Forest_Level_1(Riddle):
         print(Icons.level1.value)
 
     def _print_prolog(self):
-        print(f"{self.name} you are in front of a big dark forest and you are super brave,\
-              some say THE bravest. So you entering it to find the lost treasure.\n")
+        print(f"{self.name} {self._prolog_dialog[0]}\n")
 
     def _print_success_message(self):
-        print_lines([' Going into the dark...',
-                    " Risking your live...", " GOOD CHOICE!!!"], 1)
+        print_lines(self._success_dialog, 1)
         input()
 
     def _print_fail_message(self):
-        print('You fool that was the way out of the forest. You are leaving the forest without\
-              the treasure and die in poverty (some decades later, but you die)')
+        print(self._failure_dialog[0])
 
     def _give_necessary_information(self):
-        print_lines(['You are finding yourself at a crossroad:',
-                     "\tOn the LEFT the thicket clears and you see the sun shining through the trees.",
-                     "\tOn the RIGHT the opposite is the case. It seems like the road is vanishing\
-                     in the darkness of the forest (spoookey)."],
-                    2)
+        print_lines(self._info_dialog, 2)
 
     def _calculate_correct_answer(self):
         self.correct_answer: list = ['right', 'r']
@@ -72,38 +66,25 @@ class Forest_Level_2(Riddle):
         print(Icons.level2.value)
 
     def _print_prolog(self):
-        print_lines([f"{self.name} you reached a ledge of {self.riddle_data} meters.\
-            There is only one way to get up there ...",
-                     "You have to built stairs out of tree trunks.\n"], 2)
+        print_lines([f"{self.name} {self._prolog_dialog[0]} {self.riddle_data} {self._prolog_dialog[1]}",
+                     self._prolog_dialog[2]], 2)
 
     def _print_success_message(self):
         print_lines(
-            [f"\nThat was not as easy as expected, cutting down {self.answer} trees.\
-                I see (smell) you sweated a little bit, but you made it ...",
-             "Let's get up that ledge ..."], 2)
+            [f"{self._success_dialog[0]} {self.answer} {self._success_dialog[1]} ",
+             {self._success_dialog[2]}], 2)
         input()
 
     def _print_fail_message(self):
         if int(self.answer) > self.correct_answer:
-            print("Too much work for one single person. Considered retrospectively the\
-                amount of trees you cut down was too high. You die from exhaustion.")
+            print(self._failure_dialog[0])
         elif int(self.answer) < self.correct_answer:
-            print("You build a stairway out of the trunks, but you calculated too less trees\
-                ....you are falling from your pile, break you neck and die")
+            print(self._failure_dialog[1])
         print_lines(['.' * (i + 1) for i in range(3)], 1)
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))
-        print_lines(["The average tree trunk (O) has a diameter of 50cm. If the goal for the\
-            stairs would be to reach a height of 1.5m it would look like that:",
-                     """
-                        O
-                       OO
-                      OOO
-                     """,
-                     "I have mentioned that you have an axe, haven't I? Yes you carry that heavy thing\
-                         around the whole time, bit strange that you didn't notice it."],
-                    2)
+        print_lines(self._info_dialog, 2)
 
     def _calculate_correct_answer(self):
         # gauss summation
@@ -129,29 +110,21 @@ class Forest_Level_3(Riddle):
         print(Icons.level3.value)
 
     def _print_prolog(self):
-        print_lines([f"{self.name} you reached the top ledge and now you can enter a different part of the forest.\
-            It already got a bit late and the night falls....damn trunk stairway building",
-                     "The stars are bright, maybe they can help to find the right direction ...\n",
-                     Icons.stars.value], 3)
+        print_lines([f"{self.name} {self._prolog_dialog[0]}",
+                     self._prolog_dialog[1], Icons.stars.value], 3)
 
     def _print_success_message(self):
-        print_lines(['', f"I didn't doubt you for a second ... the north polar star ... way to easy for a good\
-            pathfinder like you, {self.name}.\n",
-                     "\nYou have a new direction ...",
-                     "You are motivated ...",
-                     "... BUT ..."], 3)
+        print_lines(['', f"{self.name} {self._success_dialog[0]}.\n"] +
+                    self._success_dialog[1:], 3)
         input()
 
     def _print_fail_message(self):
-        print_lines(["The ghost of your old pathfinder leader apears out of nowhere ...\n",
-                     f"\n\n\t\"{self.name}, I am very disappointed about your lack of basic knowledge\"\n\n"], 3)
+        print_lines([self._failure_dialog[0],
+                     f"{self._failure_dialog[1]}{self.name}{self._failure_dialog[2]}"], 3)
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data[1]))
-        print_lines(["\nTake a look into the stars to find our next direction, the only thing you know is that you have\
-            to head NORTH: ",
-                     "\nMaybe that helps to find in which of these directions you shoud go ...\n",
-                     Icons.coords.value], 3)
+        print_lines(self._info_dialog + [Icons.coords.value], 3)
 
     def _calculate_correct_answer(self):
         self.correct_answer: int = self.riddle_data[0]
@@ -207,20 +180,15 @@ class Forest_Level_4(Riddle):
         print(Icons.level4.value)
 
     def _print_prolog(self):
-        print_lines(["You should rest a bit, the forest is still a dangerous place ... especially at night.\n",
-                     "You could either climb up a tree, even if you are already a 'bit' exhausted and sleep on \
-                         a big branch or you could find a nice cozy place on the ground...as cozy as sleeping on\
-                             the ground could be."], 3)
+        print_lines(self._prolog_dialog, 3)
 
     def _print_success_message(self):
-        print_lines(['', f"Damn {self.name}...",
-                     "That was a really good decision, you are recovered and top fit to continue!"], 2)
+        print_lines(['', f"{self._success_dialog[0]} {self.name} {self._success_dialog[1]}",
+                     self._success_dialog[2]], 2)
         input()
 
     def _print_fail_message(self):
-        print_lines(['', 'I told you it is dangerous here in the forest and you decided to sleep on the ground ...',
-                     'Something or someone (it is really dark, as I mentioned) is attacking you while you are\
-                         sleeping ...\n'], 3)
+        print_lines([''] + self._failure_dialog, 3)
 
     def _give_necessary_information(self):
         pass
@@ -246,20 +214,14 @@ class Forest_Level_5(Riddle):
         print(Icons.level5.value)
 
     def _print_prolog(self):
-        print_lines([f"{self.name} you are up in the tree.",
-                     "The sun is rising and you recognize how high you climbed up yesterday.",
-                     "Let's see how you manage to get down from that monster of a tree.",
-                     "You stepped on the first branch below you and .... CRRRRrrrrrRRRRRrrrrrrRAaaaCcK",
-                     "The branch broke and fell to the ground, luckily you were able to grab the tree and didn't fall.\
-                         (otherwise the level would be quite short :-D)",
-                     f"\t {self.name} take a deep breath and start to use your brain!!!",
-                     "You are recognizing some branches have cracks and you are rating them with the following system\
-                         (and yes, you have paper and pencil, who yould go on such an adventure without it): "], 2)
+        print_lines([f"{self.name} {self._prolog_dialog[0]}"] + self._prolog_dialog[1:4] +
+                    [f"\t {self.name} {self._prolog_dialog[5]}", self._prolog_dialog[6]], 2)
 
     def _print_success_message(self):
         print_lines(
-            ['', f"It seems today is your lucky day, with a survival propability of {(self.correct_answer[0]*100):.2f}%\
-                you made it to the \"save\" ground."], 2)
+            ['',
+             f"{self._success_dialog[0]} {(self.correct_answer[0]*100):.2f}% {self._success_dialog[1]}"],
+            2)
         input()
 
     def _print_fail_message(self):
@@ -494,5 +456,3 @@ class Forest_Level_8(Forest_Level_1):
 
 if __name__ == '__main__':
     pass
-
-

@@ -13,6 +13,7 @@ Short Introduction
 # =========================================================================== #
 
 
+import os
 import time
 from DeepIntoTheForestLevels import (Forest_Level_1, Forest_Level_2, Forest_Level_3, Forest_Level_4,
                                      Forest_Level_5, Forest_Level_6, Forest_Level_7, Forest_Level_8)
@@ -25,6 +26,7 @@ from GeneralGame.game import TerminalGame
 # =========================================================================== #
 VERSION = "1.0.2"
 YEAR = 2022
+ABSOLUTE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 # =========================================================================== #
 #  SECTION: Class definitions
 # =========================================================================== #
@@ -38,6 +40,7 @@ class Game(TerminalGame):
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Constructor
     # ----------------------------------------------------------------------- #
+    dialog_path = os.path.join(ABSOLUTE_PATH, 'dialogues.xlsx')
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Getter/Setter
     # ----------------------------------------------------------------------- #
@@ -47,27 +50,37 @@ class Game(TerminalGame):
     # ----------------------------------------------------------------------- #
     def start(self):
         while self.player.is_alive:
+            killing_addition: str = ''
             time.sleep(1)
             clear_terminal()
             match self.level:
                 case 0:
                     self.new_adventure = self._explain_rules_and_ask_for_start
                 case 1:
-                    self.new_adventure = Forest_Level_1(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_1(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='1').start
                 case 2:
-                    self.new_adventure = Forest_Level_2(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_2(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='2').start
                 case 3:
-                    self.new_adventure = Forest_Level_3(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_3(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='3').start
+                    killing_addition = '... out of shame'
                 case 4:
-                    self.new_adventure = Forest_Level_4(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_4(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='4').start
                 case 5:
-                    self.new_adventure = Forest_Level_5(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_5(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='5').start
                 case 6:
-                    self.new_adventure = Forest_Level_6(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_6(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='6').start
                 case 7:
-                    self.new_adventure = Forest_Level_7(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_7(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='7').start
                 case 8:
-                    self.new_adventure = Forest_Level_8(self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_8(self.player.name, self.debug,
+                                                        self.dialog_path, sheet_name='8').start
                 case _:
                     break
                     print("Level not found :(")
@@ -75,7 +88,7 @@ class Game(TerminalGame):
             if self.new_adventure():
                 self.level += 1
             else:
-                self._kill_player_and_ask_for_restart()
+                self._kill_player_and_ask_for_restart(killing_addition)
 
     def stop(self):
         print("bye bye bye, bye bye (in a backsstreet boys way...)")
@@ -106,7 +119,7 @@ class Game(TerminalGame):
 def main():
     print(f"DeepIntoTheForestGame | VERSION: {VERSION} | {YEAR}")
     print(Icons.level0.value)
-    game = Game(debug=True)
+    game = Game(level=4, debug=True)
     game.start()
     game.stop()
 

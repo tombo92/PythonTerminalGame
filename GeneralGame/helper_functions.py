@@ -33,7 +33,7 @@ def is_input_valid(answer: str, options: list) -> bool:
 
 def print_lines(lines: list, delay: int = 0):
     for line in lines:
-        print(line)
+        print(line.replace('\\n', '\n').replace('\\t', '\t'))
         time.sleep(delay)
 
 
