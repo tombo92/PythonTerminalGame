@@ -3,3 +3,6 @@ __pycache__/
 
 ### VisualStudioCode ###
 .vscode/*
+
+### EXECUTABLE ###
+build/
