@@ -26,17 +26,23 @@ import time
 
 class Riddle(ABC):
 
-    def __init__(self, player_name: str):
+    def __init__(self, player_name: str, debug: bool = False):
         self.name: str = player_name
         self.correct_answer = None
+        self.riddle_data = None
+        self.answer = None
+        self.debug = debug
 
     def start(self) -> bool:
+        self._generate_riddle_data()
         self._print_icon()
         time.sleep(1)
         self._print_prolog()
         time.sleep(1)
         self._give_necessary_information()
         self._calculate_correct_answer()
+        if self.debug:
+            print(f"The correct answer is: {self.correct_answer}")
         if self._ask_for_answer_and_compare():
             time.sleep(2)
             self._print_success_message()
@@ -71,6 +77,10 @@ class Riddle(ABC):
 
     @abstractmethod
     def _ask_for_answer_and_compare(self) -> bool:
+        pass
+
+    @abstractmethod
+    def _generate_riddle_data(self):
         pass
 
 # =========================================================================== #
