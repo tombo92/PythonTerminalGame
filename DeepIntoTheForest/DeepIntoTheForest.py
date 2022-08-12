@@ -12,11 +12,14 @@ Short Introduction
 #  SECTION: Imports
 # =========================================================================== #
 
+
 import time
 from typing import Callable
-from DeepIntoTheForestLevels import Forest_Level_1, Forest_Level_2, Forest_Level_3, Forest_Level_4, Forest_Level_5, Forest_Level_6, Forest_Level_7, Forest_Level_8
-from helper_functions import clear_terminal, is_input_valid, print_lines
-from icons import Icons
+from DeepIntoTheForestLevels import (Forest_Level_1, Forest_Level_2, Forest_Level_3, Forest_Level_4,
+                                     Forest_Level_5, Forest_Level_6, Forest_Level_7, Forest_Level_8)
+from GeneralGame.helper_functions import clear_terminal, is_input_valid, print_lines
+from GeneralGame.icons import Icons
+from GeneralGame.player import Player
 
 # =========================================================================== #
 #  SECTION: Global definitions
@@ -26,47 +29,6 @@ YEAR = 2022
 # =========================================================================== #
 #  SECTION: Class definitions
 # =========================================================================== #
-
-
-class Player:
-    """
-    player class
-    """
-
-    # ----------------------------------------------------------------------- #
-    #  SUBSECTION: Constructor
-    # ----------------------------------------------------------------------- #
-    def __init__(self, name):
-        self.name = name
-        self._is_alive = True
-        self._death_counter = 0
-
-    # ----------------------------------------------------------------------- #
-    #  SUBSECTION: Getter/Setter
-    # ----------------------------------------------------------------------- #
-    @property
-    def is_alive(self):
-        return self._is_alive
-
-    # ----------------------------------------------------------------------- #
-    #  SUBSECTION: Public Methods
-    # ----------------------------------------------------------------------- #
-    def die(self, extra: str = ''):
-        print(f"Oh NO, {self.name} you died :(\n{extra}")
-        self._is_alive = False
-        self._death_counter += 1
-
-    def reincarnate(self):
-        if self._death_counter == 7:
-            print(
-                "\nYou already died 7 times, even a cat would be totally dead by know .... but who counts\n")
-            time.sleep(3)
-        print(f"{self.name} you came back from the dead")
-        self._is_alive = True
-
-    # ----------------------------------------------------------------------- #
-    #  SUBSECTION: Private Methods
-    # ----------------------------------------------------------------------- #
 
 
 class Game:
@@ -109,7 +71,7 @@ class Game:
                 case 6:
                     self.new_adventure = Forest_Level_6(self.player.name, self.debug).start
                 case 7:
-                    self.new_adventure = Forest_Level_7( self.player.name, self.debug).start
+                    self.new_adventure = Forest_Level_7(self.player.name, self.debug).start
                 case 8:
                     self.new_adventure = Forest_Level_8(self.player.name, self.debug).start
                 case _:
@@ -120,7 +82,6 @@ class Game:
                 self.level += 1
             else:
                 self._kill_player_and_ask_for_restart()
-
 
     def stop(self):
         print("bye bye bye, bye bye (in a backsstreet boys way...)")
@@ -183,9 +144,10 @@ def main():
     game.stop()
 
 
-
 # =========================================================================== #
 #  SECTION: Main Body
 # =========================================================================== #
+
+
 if __name__ == '__main__':
     main()
