@@ -13,6 +13,7 @@ Short Introduction
 #  SECTION: Imports
 # =========================================================================== #
 import os
+import string
 import time
 
 
@@ -51,6 +52,23 @@ def get_indices_of_element_in_list(alist: list, value_to_check) -> list:
 
 def clear_terminal():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+def caesar(plaintext: str, shift: int) -> str:
+    alphabet = string.ascii_lowercase
+    shifted_alphabet = alphabet[shift:] + alphabet[:shift]
+    table = str.maketrans(alphabet, shifted_alphabet)
+    return plaintext.translate(table)
+
+
+def encode_text(plaintext: str, key: str) -> str:
+    cipher = ''
+    for i, letter in enumerate(plaintext.replace(' ', '')):
+        if i % 4 == 0:
+            cipher += ' '
+        cipher += caesar(letter,
+                         string.ascii_lowercase.index(key.lower()[i % len(key)]))
+    return cipher
 
 
 # =========================================================================== #
