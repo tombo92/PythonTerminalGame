@@ -14,12 +14,11 @@ Short Introduction
 
 
 import time
-from typing import Callable
 from DeepIntoTheForestLevels import (Forest_Level_1, Forest_Level_2, Forest_Level_3, Forest_Level_4,
                                      Forest_Level_5, Forest_Level_6, Forest_Level_7, Forest_Level_8)
 from GeneralGame.helper_functions import clear_terminal, is_input_valid, print_lines
 from GeneralGame.icons import Icons
-from GeneralGame.player import Player
+from GeneralGame.game import TerminalGame
 
 # =========================================================================== #
 #  SECTION: Global definitions
@@ -31,7 +30,7 @@ YEAR = 2022
 # =========================================================================== #
 
 
-class Game:
+class Game(TerminalGame):
     """
         game class
     """
@@ -39,11 +38,6 @@ class Game:
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Constructor
     # ----------------------------------------------------------------------- #
-    def __init__(self, level: int = 0, debug: bool = False):
-        self.player: Player = self._create_new_player()
-        self.level: int = level
-        self.debug: bool = debug
-        self.new_adventure: Callable = None
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Getter/Setter
     # ----------------------------------------------------------------------- #
@@ -103,33 +97,6 @@ class Game:
             answer = input("Shall we start? [Yes/No] ")
             if is_input_valid(answer, ['yes', 'no', 'y', 'n']):
                 return answer.lower() in ['yes', 'y']
-
-    def _create_new_player(self) -> Player:
-        while 1:
-            name = input("Who is playing this game?: ")
-            if not name.isalpha() or len(name) < 3:
-                print("Your name should at minimum constists of three LETTERS.")
-                continue
-            while 1:
-                if name.lower() == 'wessel':
-                    print("Wessel it's you, what a surprise :-p")
-                check = input(
-                    f"Hello {name}, is that the name you want to be called? [Yes/No] ")
-                if is_input_valid(check, ['yes', 'no', 'y', 'n']):
-                    if check.lower() in ['yes', 'y']:
-                        return Player(name)
-                    clear_terminal()
-                    break
-
-    def _kill_player_and_ask_for_restart(self, extra: str = ''):
-        self.player.die(extra)
-        answer = input(
-            f"{self.player.name} do you want to restart your quest? [Yes/No] ")
-        if is_input_valid(answer, ['yes', 'no', 'y', 'n']):
-            if answer.lower() in ['yes', 'y']:
-                self.level = 1
-                self.player.reincarnate()
-                time.sleep(1)
 
 
 # =========================================================================== #
