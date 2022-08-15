@@ -3,15 +3,16 @@
 # @Date    : 2022-08-12 13:22:07
 # @Author  : Tom Brandherm
 # @Python  : 3.10
-# @Link    : link
-# @Version : 0.0.1
+# @Link    : https://github.com/tombo92
+# @Version : 1.0.2
 """
-Short Introduction
+Player class
 """
 
 # =========================================================================== #
 #  SECTION: Imports
 # =========================================================================== #
+from sys import settrace
 import time
 
 # =========================================================================== #
@@ -33,15 +34,24 @@ class Player:
     # ----------------------------------------------------------------------- #
     def __init__(self, name):
         self.name = name
-        self._is_alive = True
+        self._life_counter = 3
         self._death_counter = 0
+        self._is_alive = True
 
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Getter/Setter
     # ----------------------------------------------------------------------- #
     @property
+    def life_counter(self):
+        return self._life_counter
+
+    @property
     def is_alive(self):
         return self._is_alive
+
+    @life_counter.setter
+    def life_counter(self, value: int):
+        self._life_counter = value
 
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Public Methods
@@ -57,6 +67,7 @@ class Player:
                 "\nYou already died 7 times, even a cat would be totally dead by know .... but who counts\n")
             time.sleep(3)
         print(f"{self.name} you came back from the dead")
+        self._life_counter = 3
         self._is_alive = True
 
     # ----------------------------------------------------------------------- #

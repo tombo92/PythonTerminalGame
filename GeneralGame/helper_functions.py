@@ -3,10 +3,10 @@
 # @Date    : 2022-06-01 18:04:49
 # @Author  : Tom Brandherm
 # @Python  : 3.10
-# @Link    : link
-# @Version : 0.0.1
+# @Link    : https://github.com/tombo92
+# @Version : 1.0.2
 """
-Short Introduction
+helper functions
 """
 
 # =========================================================================== #
@@ -33,7 +33,7 @@ def is_input_valid(answer: str, options: list) -> bool:
 
 def print_lines(lines: list, delay: int = 0):
     for line in lines:
-        print(line.replace('\\n', '\n').replace('\\t', '\t'))
+        print(line)
         time.sleep(delay)
 
 
@@ -42,7 +42,7 @@ def addToClipBoard(text):
     os.system(command)
 
 
-def get_indices_of_element_in_list(alist: list, value_to_check) -> list:
+def get_indices_of_element_in_list(alist: list, value_to_check) -> list[int]:
     indices = []
     for i, value in enumerate(alist):
         if value == value_to_check:
@@ -71,11 +71,13 @@ def encode_text(plaintext: str, key: str) -> str:
     return cipher
 
 
+def split_dialog(dialog: str) -> list[str]:
+    return dialog.split('###')
+
+
 # =========================================================================== #
 #  SECTION: Main Body
 # =========================================================================== #
 
 if __name__ == '__main__':
     pass
-
-
