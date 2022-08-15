@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # @Date    : 2022-05-24 15:31:29
-# @Author  : Tom Brandherm (tom.brandherm@msasafety.com)
+# @Author  : Tom Brandherm
 # @Python  : 3.10
-# @Link    : link
-# @Version : 0.0.1
+# @Link    : https://github.com/tombo92
+# @Version : 1.0.2
 """
-Short Introduction
+Ascii Art Icons
 """
 
 # =========================================================================== #
 #  SECTION: Imports
 # =========================================================================== #
-from enum import Enum
+from strenum import StrEnum
+from colorama import Fore
+from colorama import Style
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
@@ -22,7 +24,7 @@ from enum import Enum
 # =========================================================================== #
 
 
-class Icons(Enum):
+class Icons(StrEnum):
     level0 = """
 
  __      __       .__
@@ -99,8 +101,7 @@ class Icons(Enum):
         \/        \/                    \/         \/
 """
 
-
-    firework = """                                   .''.
+    firework = f"""{Fore.YELLOW}                                   .''.
        .''.      .        *''*    :_\/_:     .
       :_\/_:   _\(/_  .:.*_\/_*   : /\ :  .'.:.'.
   .''.: /\ :   ./)\   ':'* /\ * :  '..'.  -=:o:=-
@@ -109,30 +110,30 @@ class Icons(Enum):
   '..'  ':::'     * /\ *     .'/.\\'.   '
       *            *..*         :
         *
-        *"""
+        *{Style.RESET_ALL}"""
 
-    question_mark = """
-            ________
-        _jgN########Ngg_
-      _N##N@@""  ""9NN##Np_
-     d###P            N####p
-     "^^"              T####
-                       d###P
-                    _g###@F
-                 _gN##@P
-               gN###F"
-              d###F
-             0###F
-             0###F
-             0###F
-             "NN@'
+    question_mark = f"""{Fore.GREEN}
+                                                                                  ________
+                                                                              _jgN########Ngg_
+                                                                            _N##N@@""  ""9NN##Np_
+                                                                           d###P            N####p
+                                                                           "^^"              T####
+                                                                                             d###P
+                                                                                          _g###@F
+                                                                                       _gN##@P
+                                                                                     gN###F"
+                                                                                    d###F
+                                                                                   0###F
+                                                                                   0###F
+                                                                                   0###F
+                                                                                   "NN@'
 
-              ___
-             q###r
-              ""
-              """
+                                                                                    ___
+                                                                                   q###r
+                                                                                    ""
+              {Style.RESET_ALL}"""
 
-    certificate = """
+    certificate = f"""{Fore.YELLOW}
     =============================================================================================================================================================
     =============================================================================================================================================================
 
@@ -153,13 +154,13 @@ class Icons(Enum):
     =============================================================================================================================================================
     =============================================================================================================================================================
     \a \a \a \a \a
-    """
+    {Style.RESET_ALL}"""
 
-    monster = """
+    monster = f"""
             _.------.        .----.__
            /         \_     /-        \\
-          |  O    O   |    /       `\ |
-          |  .vvvvv.  |    | o     o  \|
+          |  {Fore.RED}O{Style.RESET_ALL}    {Fore.RED}O{Style.RESET_ALL}   |    /       `\ |
+          |  .vvvvv.  |    | {Fore.RED}o{Style.RESET_ALL}     {Fore.RED}o{Style.RESET_ALL}  \|
           /  |     |  |  ./| .vvvvv.  |\\
          /   `^^^^^'    / /| |     |  | \\
        ./  /|         |//' | `^vvvv'  |/\\\\
@@ -188,16 +189,50 @@ class Icons(Enum):
 
     """
 
-    stars ="""
+    stars =f"""
     *  .  . *       *    .        .        .   *    ..
- .    *        .   ###     .      .        .            *
-    *.   *        #####   .     *      *        *    .
-     *       *  ######### *    .  *      .        .  *   .
- .             ###\#|#/###   ..    *    .      *  .  ..  *
-*       .  *    ###\|/###  *    *            .      *   *
-                 # }|{  #
-*  .  ..  *        }|{
+ .    *        .   {Fore.GREEN}###{Style.RESET_ALL}     .      .        .            *
+    *.   *        {Fore.GREEN}#####{Style.RESET_ALL}   .     *      {Fore.YELLOW}*{Style.RESET_ALL}        *    .
+     *       *  {Fore.GREEN}#########{Style.RESET_ALL} *    .  *      .        .  *   .
+ .             {Fore.GREEN}###{Style.RESET_ALL}\{Fore.GREEN}#{Style.RESET_ALL}|{Fore.GREEN}#{Style.RESET_ALL}/{Fore.GREEN}###{Style.RESET_ALL}   ..    *    .      *  .  ..  *
+*       .  *    {Fore.GREEN}###{Style.RESET_ALL}\|/{Fore.GREEN}###{Style.RESET_ALL}  *    *            .      *   *
+                 {Fore.GREEN}#{Style.RESET_ALL} }}|{{ {Fore.GREEN}#{Style.RESET_ALL}
+*  .  ..  *        }}|{{
     """
+
+    spell = f"""{Fore.YELLOW}
+    \n\t\t  ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ*･｡ﾟ☆ﾟ.*･｡ﾟ*･
+    ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ
+    ☆ﾟ.*･｡.*･｡･｡☆｡｡☆{Style.RESET_ALL}   \x1B[1mYOU CAST THE SPELL!\033[0m{Fore.YELLOW} ･｡ﾟ☆ﾟ.･｡ﾟ☆ﾟ☆ﾟ.*･｡ﾟ.*･｡ﾟ
+    ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ
+    \t\t  ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ☆ﾟ.*･｡ﾟ\n
+    {Style.RESET_ALL}"""
+
+    full_hearts = f"""{Fore.RED}
+        ,d88b.d88b,  ,d88b.d88b,  ,d88b.d88b,
+        88888888888  88888888888  88888888888
+        `Y8888888Y'  `Y8888888Y'  `Y8888888Y'
+          `Y888Y'      `Y888Y'      `Y888Y'
+            `Y'          `Y'          `Y'
+    {Style.RESET_ALL}"""
+
+    two_hearts = f"""
+        {Fore.RED},d88b.d88b,  ,d88b.d88b,  {Style.RESET_ALL},'``'.'´´',
+        {Fore.RED}88888888888  88888888888  {Style.RESET_ALL}8         8
+        {Fore.RED}`Y8888888Y'  `Y8888888Y'  {Style.RESET_ALL}`Y       Y'
+        {Fore.RED}  `Y888Y'      `Y888Y'    {Style.RESET_ALL}  `Y   Y'
+        {Fore.RED}    `Y'          `Y'      {Style.RESET_ALL}    `Y'
+    """
+
+    one_heart = f"""
+        {Fore.RED},d88b.d88b,  {Style.RESET_ALL},'``'.'´´',  ,'``'.'´´',
+        {Fore.RED}88888888888  {Style.RESET_ALL}8         8  8         8
+        {Fore.RED}`Y8888888Y'  {Style.RESET_ALL}`Y       Y'  `Y       Y'
+        {Fore.RED}  `Y888Y'    {Style.RESET_ALL}  `Y   Y'      `Y   Y'
+        {Fore.RED}    `Y'      {Style.RESET_ALL}    `Y'          `Y'
+    """
+
+
 
 
 # =========================================================================== #
