@@ -57,25 +57,39 @@ class Prolog(StrEnum):
         "rating them with the following system (and yes, you have paper and " + \
         "pencil, who yould go on such an adventure without it): "
 
-    LEVEL_6_A = "That was kind of fun, wasn't it!?###NOOOO!!! you almost died " + \
+    LEVEL_6_A = "Can a a day possibly better start than almost falling down a" + \
+        " tree? ... who needs coffee, right?!###Up on the tree you were able to" + \
+        " see some sun light. That has changed down here ...###"
+    LEVEL_6_B = "you are trying to find a way through dense bushes ... there must be a path"
+    LEVEL_6_C = "...###It seems impossible to penetrate this wall of thorns.###" + \
+        "You have already scratches all over your body and only a meter sight range###" + \
+        "You spot a gap in this planty hell ...###one last move and ...###" + \
+        "You are falling into a huge hole###.###\t..###\t\t..."
+    LEVEL_6_D = "you survied the fall (more or less) and finding youself in a dark cave."
+    LEVEL_6_E = "Who could have thought that you would end up in an even darker place###" + \
+        "Things can can ('will' in case of this game) alway go worse ... you hear the" + \
+        " wheeze of a big creature###For sure it is not a sweet monster from 'Monsters, Inc.'" + \
+        "###You should find a way out of this cave as fast a possible ..."
+
+    LEVEL_7_A = "That was kind of fun, wasn't it!?###NOOOO!!! you almost died " + \
         "and you are still in danger in that godforsaken forest ... what is " + \
         "FUNNY about that?###Let's continue, the treasure must be close ... " + \
         "hopefully.###The forest is really dense again and almost all the light " + \
         "is absorbed by the treetops.###No sounds of birds or other animals, " + \
         "not even mosquitos. (but let's not be sad about that)"
-    LEVEL_6_B = "But you can feel that something is watching you,"
-    LEVEL_6_C = "The trees are like giant pillars of shadows and you get more " + \
+    LEVEL_7_B = "But you can feel that something is watching you,"
+    LEVEL_7_C = "The trees are like giant pillars of shadows and you get more " + \
         "and more the feeling you should leave that place as soon as possible." + \
         "\n###You should have listened to your gut feeling.###Narsty furry " + \
         "creatures have surrounded you.###\ttheir teeth are sharp ...###" + \
         "\ttheir claws are even sharper\n\n"
-    LEVEL_6_D = "RUUUUUUUUuuuuhuuuunN ...\n###...\n"
+    LEVEL_7_D = "RUUUUUUUUuuuuhuuuunN ...\n###...\n"
 
-    LEVEL_7_A = "After a perceived infinity prisoned here you are entering " + \
+    LEVEL_8_A = "After a perceived infinity prisoned here you are entering " + \
         "the first forest clearing since you entered.###Even this place of " + \
         "light feels not really save. More eyes are staring at you out of " + \
         "the surrounding darkness."
-    LEVEL_7_B = "in the middle of this clearing you are finding a slab of " + \
+    LEVEL_8_B = "in the middle of this clearing you are finding a slab of " + \
         "stone with the following inscriptions."
 
 
@@ -100,26 +114,28 @@ class Success(StrEnum):
     LEVEL_5_A = "It seems today is your lucky day, with a survival propability of"
     LEVEL_5_B = "you made it to the 'save' ground."
 
-    LEVEL_6_A = "Perfect move ... it is official, you are smarter than these " + \
+    LEVEL_6 = ''
+
+    LEVEL_7_A = "Perfect move ... it is official, you are smarter than these " + \
         "beasts (you probably have noticed, almost none of them went to school)###" + \
         "It seems like you have shaken them off ...###Wait, another one is " + \
         "attacking you from from a tree\n"
-    LEVEL_6_B = "does a perfect roll (every gymnast would be proud!)"
-    LEVEL_6_C = "you should continue as fast as you can ..."
-    LEVEL_6_D = "It looks like there is a light at the end of the road (tunnel) ..."
+    LEVEL_7_B = "does a perfect roll (every gymnast would be proud!)"
+    LEVEL_7_C = "you should continue as fast as you can ..."
+    LEVEL_7_D = "It looks like there is a light at the end of the road (tunnel) ..."
 
-    LEVEL_7 = "A bright light occured"
+    LEVEL_8 = "A bright light occured"
 
-    LEVEL_8_A = "you made it ... really ... you have escaped the forest"
-    LEVEL_8_B = "WAIT, what about the promised treasure????\n"
-    LEVEL_8_C = "You holding something into your hand: \n"
-    LEVEL_8_D = "you have shown great courage and wisdome and that shouldn't go unrewarded:\n\n"
-    LEVEL_8_E = "\t\tChoose two brave companions of your choice (e.g. Vicky " + \
+    LEVEL_9_A = "you made it ... really ... you have escaped the forest"
+    LEVEL_9_B = "WAIT, what about the promised treasure????\n"
+    LEVEL_9_C = "You holding something into your hand: \n"
+    LEVEL_9_D = "you have shown great courage and wisdome and that shouldn't go unrewarded:\n\n"
+    LEVEL_9_E = "\t\tChoose two brave companions of your choice (e.g. Vicky " + \
         "and Tom) and take your family into the next adventure.###" + \
         "\t\tThe next forest \"WALDHOCHSEILGARTEN JUNGFERNHEIDE\" is " + \
         "waiting for you ...\n\n###\tPlease send a screenshot of this out " + \
         "into the world to start the preparation.\n\n"
-    LEVEL_8_F = "conqueror of the forest! Team Awesome is proud of you"
+    LEVEL_9_F = "conqueror of the forest! Team Awesome is proud of you"
 
 
 class Failure(StrEnum):
@@ -147,10 +163,12 @@ class Failure(StrEnum):
     LEVEL_5_B = "the path you've choosen was too dangerous and you fell to the ground " + \
         " you know what that means ..."
 
-    LEVEL_6 = "Why did you even try to find the pattern, when you are not smart " + \
+    LEVEL_6 = ''
+
+    LEVEL_7 = "Why did you even try to find the pattern, when you are not smart " + \
         "enough to forcast the next move?###WHY????###The monsters are tearing you into pieces ...### "
 
-    LEVEL_7 = " ###At least you cast a spell, but it is not the right spell. Nothing is happening ... " + \
+    LEVEL_8 = " ###At least you cast a spell, but it is not the right spell. Nothing is happening ... " + \
         "###\n\treally nothing?\n###So that means you could try it once again, right?!### " + \
         "###Would be nice, but the FOREST is not nice ... the creatures are flocking " + \
         "out of the thicket and attacking you with their claws### "
@@ -185,7 +203,9 @@ class Info(StrEnum):
         "From your position you are able to find a view possible paths, " + \
         "that can be described like that: "
 
-    LEVEL_6 = "You are faster than these \"vampire wookies\" but more " + \
+    LEVEL_6 = ''
+
+    LEVEL_7 = "You are faster than these \"vampire wookies\" but more " + \
         "and more are following you.###\tWhen they try to attack you from " + \
         "the left [L] -> you are jumping to the right [r]###" + \
         "\tWhen they try to attack you from the right [R] -> you are " + \
@@ -211,9 +231,11 @@ class Question(StrEnum):
     LEVEL_5 = "Which of these paths is the savest? [multiple correct " + \
         "answers possible, but one is enough] "
 
-    LEVEL_6 = "What will be your next move? [r, l, f, k] "
+    LEVEL_6 = ''
 
-    LEVEL_7 = "have you any idea that that means? "
+    LEVEL_7 = "What will be your next move? [r, l, f, k] "
+
+    LEVEL_8 = "have you any idea that that means? "
 
 
 if __name__ == '__main__':

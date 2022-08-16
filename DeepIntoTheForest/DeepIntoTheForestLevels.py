@@ -16,18 +16,20 @@ import random
 import time
 from dialogues import Success, Prolog, Failure, Info, Question
 from GeneralGame.player import Player
-from GeneralGame.helper_functions import (addToClipBoard, encode_text,
+from GeneralGame.helper_functions import (addToClipBoard, clear_terminal, encode_text,
                                           get_indices_of_element_in_list,
                                           is_input_valid, print_lines,
                                           split_dialog)
 from GeneralGame.icons import Icons
 from GeneralGame.riddle import Riddle
+from GeneralGame.lettering import Label
+from GeneralGame.dungeon_quest import Dungeon
 
 
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 YEAR = 2022
 # =========================================================================== #
 #  SECTION: Class definitions
@@ -50,7 +52,7 @@ class ForestLevel0(Riddle):
 
     def _print_icon_and_lives(self):
         print(f"DeepIntoTheForestGame | VERSION: {VERSION} | {YEAR}")
-        print(Icons.level0.value)
+        print(Label.LEVEL_0)
 
     def _print_prolog(self):
         print(
@@ -99,7 +101,7 @@ class ForestLevel1(Riddle):
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level1.value)
+        print(Label.LEVEL_1)
         print(f"{self._return_life_icons()}\n")
 
     def _print_prolog(self):
@@ -134,7 +136,7 @@ class ForestLevel2(Riddle):
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level2.value)
+        print(Label.LEVEL_2)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
@@ -182,7 +184,7 @@ class ForestLevel3(Riddle):
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level3.value)
+        print(Label.LEVEL_3)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
@@ -253,7 +255,7 @@ class ForestLevel4(Riddle):
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level4.value)
+        print(Label.LEVEL_4)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
@@ -290,7 +292,7 @@ class ForestLevel5(Riddle):
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level5.value)
+        print(Label.LEVEL_5)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
@@ -360,32 +362,73 @@ class ForestLevel5(Riddle):
 
 class ForestLevel6(Riddle):
     """
-    Sixth level of the DeepIntoTheForest game: pattern recognition
+    Sixth level of the DeepIntoTheForest game: dungeon quest
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level6.value)
+        print(Label.LEVEL_6)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
         print_lines(split_dialog(Prolog.LEVEL_6_A) +
-                    [f"{Prolog.LEVEL_6_B} {self.player.name}."] +
+                    [f"{self.player.name} {Prolog.LEVEL_6_B}."] +
                     split_dialog(Prolog.LEVEL_6_C) +
-                    [Icons.monster.value] +
-                    split_dialog(Prolog.LEVEL_6_D), 3)
+                    [f"{self.player.name} {Prolog.LEVEL_6_D}."] +
+                    [Icons.cave.value] +
+                    split_dialog(Prolog.LEVEL_6_E), 2)
 
     def _print_success_message(self):
-        print_lines(split_dialog(Success.LEVEL_6_A) +
-                    [f"{self.player.name} {Success.LEVEL_6_B}", f"{self.player.name} {Success.LEVEL_6_C}",
-                     Success.LEVEL_6_D, ''], 3)
+        clear_terminal()
+        print('winner')
+        input()
 
     def _print_fail_message(self):
-        print_lines(split_dialog(Failure.LEVEL_6), 3)
+        clear_terminal()
+        print('loser')
+        input()
+
+    def _give_necessary_information(self):
+        addToClipBoard('info')
+        print_lines(['some info'], 2)
+
+    def _calculate_correct_answer(self) -> tuple:
+        pass
+
+    def _ask_for_answer_and_compare(self) -> bool:
+        return Dungeon(Icons.tunnel_closed.value).start_quest()
+
+    def _generate_riddle_data(self):
+        pass
+
+
+class ForestLevel7(Riddle):
+    """
+    Seventh level of the DeepIntoTheForest game: pattern recognition
+    """
+
+    def _print_icon_and_lives(self):
+        print(Label.LEVEL_7)
+        print(f"\t{self._return_life_icons()}\n")
+
+    def _print_prolog(self):
+        print_lines(split_dialog(Prolog.LEVEL_7_A) +
+                    [f"{Prolog.LEVEL_7_B} {self.player.name}."] +
+                    split_dialog(Prolog.LEVEL_7_C) +
+                    [Icons.monster.value] +
+                    split_dialog(Prolog.LEVEL_7_D), 3)
+
+    def _print_success_message(self):
+        print_lines(split_dialog(Success.LEVEL_7_A) +
+                    [f"{self.player.name} {Success.LEVEL_7_B}", f"{self.player.name} {Success.LEVEL_7_C}",
+                     Success.LEVEL_7_D, ''], 3)
+
+    def _print_fail_message(self):
+        print_lines(split_dialog(Failure.LEVEL_7), 3)
         input()
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data[1]))
-        print_lines(split_dialog(Info.LEVEL_6) + [self.riddle_data[1]], 2)
+        print_lines(split_dialog(Info.LEVEL_7) + [self.riddle_data[1]], 2)
 
     def _calculate_correct_answer(self) -> tuple:
         self.correct_answer: str = self.riddle_data[0]
@@ -421,24 +464,24 @@ class ForestLevel6(Riddle):
         return random.choice(pattern_list)
 
 
-class ForestLevel7(Riddle):
+class ForestLevel8(Riddle):
     """
-    Seventh level of the DeepIntoTheForest game: cipher fun
+    Eighth level of the DeepIntoTheForest game: cipher fun
     """
 
     def _print_icon_and_lives(self):
-        print(Icons.level7.value)
+        print(Label.LEVEL_8)
         print(f"\t{self._return_life_icons()}\n")
 
     def _print_prolog(self):
-        print_lines(split_dialog(Prolog.LEVEL_7_A) + [f"{self.player.name} {Prolog.LEVEL_7_B}"], 3)
+        print_lines(split_dialog(Prolog.LEVEL_8_A) + [f"{self.player.name} {Prolog.LEVEL_8_B}"], 3)
 
     def _print_success_message(self):
         print_lines(
-            [Success.LEVEL_7, Icons.firework.value, '', ''], 2)
+            [Success.LEVEL_8, Icons.firework.value, '', ''], 2)
 
     def _print_fail_message(self):
-        print_lines(split_dialog(Failure.LEVEL_7), 4)
+        print_lines(split_dialog(Failure.LEVEL_8), 4)
         input()
 
     def _give_necessary_information(self):
@@ -452,7 +495,7 @@ class ForestLevel7(Riddle):
 
     def _ask_for_answer_and_compare(self) -> bool:
         while 1:
-            self.answer = input(f"{self.player.name} {Question.LEVEL_7}")
+            self.answer = input(f"{self.player.name} {Question.LEVEL_8}")
             print(Icons.spell)
             return self.answer == str(420)
 
@@ -461,9 +504,9 @@ class ForestLevel7(Riddle):
         self.riddle_data: str = encode_text(plaintext, self.player.name)
 
 
-class ForestLevel8(ForestLevel1):
+class ForestLevel9(ForestLevel1):
     """
-    Eighth level of the DeepIntoTheForest game: binary choice
+    Ninth level of the DeepIntoTheForest game: binary choice
     """
 
     def _print_icon_and_lives(self):
@@ -474,15 +517,15 @@ class ForestLevel8(ForestLevel1):
 
     def _print_success_message(self):
         print_lines(
-            ['', f'{self.player.name} {Success.LEVEL_8_A}',
-             Success.LEVEL_8_B, Icons.question_mark.value,
-             Success.LEVEL_8_C], 3)
+            ['', f'{self.player.name} {Success.LEVEL_9_A}',
+             Success.LEVEL_9_B, Icons.question_mark.value,
+             Success.LEVEL_9_C], 3)
         input("[Press a key to take a look]")
         print_lines([Icons.certificate.value,
-                     f"\t{self.player.name} {Success.LEVEL_8_D}"] +
-                    split_dialog(Success.LEVEL_8_E), 4)
+                     f"\t{self.player.name} {Success.LEVEL_9_D}"] +
+                    split_dialog(Success.LEVEL_9_E), 4)
         addToClipBoard(
-            f"{self.player.name} {Success.LEVEL_8_F}")
+            f"{self.player.name} {Success.LEVEL_9_F}")
         input("[Press a key to exit the game]")
 
     def _print_fail_message(self):
