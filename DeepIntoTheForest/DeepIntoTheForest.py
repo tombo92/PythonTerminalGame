@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.2
+# @Version : 1.0.3
 """
 Short Introduction
 """
@@ -17,7 +17,7 @@ import time
 import webbrowser
 from DeepIntoTheForestLevels import (ForestLevel0, ForestLevel1, ForestLevel2, ForestLevel3,
                                      ForestLevel4, ForestLevel5, ForestLevel6, ForestLevel7,
-                                     ForestLevel8)
+                                     ForestLevel8, ForestLevel9)
 from GeneralGame.helper_functions import clear_terminal
 from GeneralGame.game import TerminalGame
 
@@ -73,6 +73,8 @@ class Game(TerminalGame):
                         self.new_adventure = ForestLevel7(self.player, self.debug)
                     case 8:
                         self.new_adventure = ForestLevel8(self.player, self.debug)
+                    case 9:
+                        self.new_adventure = ForestLevel9(self.player, self.debug)
                     case _:
                         break
                         print("Level not found :(")
@@ -105,7 +107,7 @@ def main():
     """
     main function
     """
-    game = Game(level=0, debug=False)
+    game = Game(level=6, debug=False)
     game.start()
     game.stop()
 
