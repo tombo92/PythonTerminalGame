@@ -13,8 +13,7 @@ Ascii Art Icons
 #  SECTION: Imports
 # =========================================================================== #
 from strenum import StrEnum
-from colorama import Fore
-from colorama import Style
+from colorama import Fore, Style
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #

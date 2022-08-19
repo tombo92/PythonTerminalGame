@@ -13,9 +13,11 @@ dugeon game
 # =========================================================================== #
 #  SECTION: Imports
 # =========================================================================== #
+from abc import ABC, abstractmethod
 import time
 import emoji
 from pynput import keyboard
+from colorama import Fore, Style
 from GeneralGame.helper_functions import clear_terminal
 from GeneralGame.icons import Icons
 
@@ -27,15 +29,23 @@ from GeneralGame.icons import Icons
 # =========================================================================== #
 #  SECTION: Class definitions
 # =========================================================================== #
+class Moving_Object(ABC):
+    """
+        game class
+    """
 
+    # ----------------------------------------------------------------------- #
+    #  SUBSECTION: Constructor
+    # ----------------------------------------------------------------------- #
+    def __init__(self):
+        self._symbol = None
+        self._x: int = None
+        self._y: int = None
+        self._map: list = None
 
-class Passenger:
-
-    def __init__(self, x: int, y: int):
-        self._x = x
-        self._y = y
-        self._symbol = emoji.emojize(':person_running:', language='alias')
-
+    # ----------------------------------------------------------------------- #
+    #  SUBSECTION: Getter/Setter
+    # ----------------------------------------------------------------------- #
     @property
     def x(self) -> int:
         return self._x
@@ -47,147 +57,119 @@ class Passenger:
     @property
     def symbol(self) -> emoji:
         return self._symbol
+    # ----------------------------------------------------------------------- #
+    #  SUBSECTION: Public Methods
+    # ----------------------------------------------------------------------- #
 
-    def move_down(self):
-        self._y += 1
+    @abstractmethod
+    def move(self, x_shift: int = 0, y_shift: int = 0) -> None:
+        pass
 
-    def move_up(self):
-        self._y -= 1
+    def _inside_borders(self, x_shift: int = 0, y_shift: int = 0) -> bool:
+        in_x_range: bool = 7 <= (self._x + x_shift) < (len(self._map[10]) - 3)
+        in_y_range: bool = 5 <= (self._y + y_shift) < (len(self._map))
+        return in_x_range and in_y_range
 
-    def move_right(self):
-        self._x += 1
-
-    def move_left(self):
-        self._x -= 1
+    def _spot_is_empty(self, x_shift: int = 0, y_shift: int = 0) -> bool:
+        possible_move_list: list = [' ', 'X', 'U', '∩']
+        return self._map[self._y + y_shift][self._x + x_shift] in possible_move_list
 
 
-class Persecuter:
+class Passenger(Moving_Object):
 
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, dungeon_map: list):
+        super(Moving_Object).__init__()
+        self.opend_exit: bool = False
+        self._symbol = f'{Fore.GREEN}O{Style.RESET_ALL}'
+        self._x: int = x
+        self._y: int = y
+        self._map: list = dungeon_map
+
+    def move(self, x_shift: int = 0, y_shift: int = 0):
+        if self._inside_borders(x_shift, y_shift) and self._spot_is_empty(x_shift, y_shift):
+            self._check_and_open_exit(x_shift, y_shift)
+            self._x += x_shift
+            self._y += y_shift
+
+    def _check_and_open_exit(self, x_shift: int = 0, y_shift: int = 0):
+        if (self._x + x_shift) in [11, 12] and (self._y + y_shift) == 38:
+            self.opend_exit = True
+
+
+class Persecuter(Moving_Object):
+
+    def __init__(self, x: int, y: int, dungeon_map: list):
+        super(Moving_Object).__init__()
         self._x = x
         self._y = y
-        self._symbol = emoji.emojize(':ogre:', language='alias')
+        # emoji.emojize(':ogre:', language='alias')
+        self._symbol = f'{Fore.RED}X{Style.RESET_ALL}'
+        self._map = dungeon_map
+        self._pursued_x: int = None
+        self._pursued_y: int = None
+        self._range_counter: int = 0
 
-    @property
-    def x(self) -> int:
-        return self._x
-
-    @property
-    def y(self) -> int:
-        return self._y
-
-    @property
-    def symbol(self) -> emoji:
-        return self._symbol
-
-    def move(self, pursued_move: str) -> None:
-        match pursued_move:
-            case 'up':
-                self._y -= 1
-            case 'down':
-                self._y += 1
-            case 'right':
-                self._x += 1
-            case 'left':
-                self._x -= 1
-            case _:
-                print('unknown move')
+    def move(self, pursued: Passenger) -> None:
+        x_shift: int = pursued.x
+        y_shift: int = pursued.y
 
 
 class Dungeon:
 
     def __init__(self, dungeon_map: str):
         self._map: list = dungeon_map.split('\n')
-        self._persecuter: Persecuter = Persecuter(x=27, y=51)
+        self._persecuter: Persecuter = Persecuter(
+            x=27, y=51, dungeon_map=self._map)
         self._pursued: Passenger = Passenger(
-            x=len(self._map[10])-4, y=len(self._map)-3)
+            x=len(self._map[10])-4, y=len(self._map)-3,
+            dungeon_map=self._map)
         self._exit_open: bool = False
         self._puzzle_solved: bool = False
 
     def start_quest(self) -> bool:
         self._draw_dungeon()
-        print(f"Use the arrow keys to move: {emoji.emojize(':left_arrow: ', language='alias')}" +
-              f"{emoji.emojize(':up_arrow: ', language='alias')}" +
-              f"{emoji.emojize(':down_arrow: ', language='alias')}" +
-              f"{emoji.emojize(':right_arrow: ', language='alias')}")
+        print("Use the arrow keys to move.")
         while not self._puzzle_solved:
             with keyboard.Events() as events:
                 event = events.get(1e6)
             if event.key == keyboard.Key.up:
-                if self._check_next_move('up', self._pursued):
-                    self._pursued.move_up()
-                for _ in range(2):
-                    if self._check_next_move('up', self._persecuter):
-                        self._persecuter.move('up')
+                self._pursued.move(y_shift=-1)
             elif event.key == keyboard.Key.down:
-                if self._check_next_move('down', self._pursued):
-                    self._pursued.move_down()
-                for _ in range(2):
-                    if self._check_next_move('down', self._persecuter):
-                        self._persecuter.move('down')
+                self._pursued.move(y_shift=1)
             elif event.key == keyboard.Key.left:
-                if self._check_next_move('left', self._pursued):
-                    self._pursued.move_left()
-                for _ in range(2):
-                    if self._check_next_move('left', self._persecuter):
-                        self._persecuter.move('left')
+                self._pursued.move(x_shift=-1)
             elif event.key == keyboard.Key.right:
-                if self._check_next_move('right', self._pursued):
-                    self._pursued.move_right()
-                for _ in range(2):
-                    if self._check_next_move('right', self._persecuter):
-                        self._persecuter.move('right')
+                self._pursued.move(x_shift=1)
             else:
                 continue
+
+            self._persecuter.move(self._pursued)
             time.sleep(0.05)
             clear_terminal()
 
-            if (self._persecuter.x, self._persecuter.y) == (self._pursued.x, self._pursued.y):
+            # persecuter killed pursued
+            print((self._persecuter.x, self._persecuter.y))
+            print((self._pursued.x, self._pursued.y))
+            if (self._persecuter.x, self._persecuter.y) == (self._pursued.x - 9, self._pursued.y):
                 return False
+            if self._pursued.opend_exit:
+                self.open_exit()
             self._draw_dungeon()
-            print(f"Use the arrow keys to move: {emoji.emojize(':left_arrow: ', language='alias')}" +
-                  f"{emoji.emojize(':up_arrow: ', language='alias')}" +
-                  f"{emoji.emojize(':down_arrow: ', language='alias')}" +
-                  f"{emoji.emojize(':right_arrow: ', language='alias')}")
+            print("Use the arrow keys to move.")
         return True
 
     def _draw_dungeon(self):
+        upper_line: int = min(len(self._map), self._pursued.y + 5)
+        lower_line: int = max(0, self._pursued.y - 5)
         for y, line in enumerate(self._map):
             if y == self._persecuter.y:
-                line = line[:self._persecuter.x-1] + \
+                line = line[:self._persecuter.x] + \
                     self._persecuter.symbol + line[self._persecuter.x + 1:]
             if y == self._pursued.y:
-                line = line[:self._pursued.x-1] + \
+                line = line[:self._pursued.x] + \
                     self._pursued.symbol + line[self._pursued.x + 1:]
-            print(line)
-
-    def _check_next_move(self, direction: str, moving_object) -> bool:
-        in_borders: bool = False
-        is_empty: bool = False
-        possible_move_list: list = [' ', emoji.emojize(':ogre:', language='alias'),
-                                    emoji.emojize(':person_running:', language='alias')]
-        if direction == 'up':
-            new_y: int = moving_object.y - 1
-            in_borders = (moving_object.y - 1) in range(5, len(self._map))
-            is_empty = self._map[moving_object.y -
-                                 1][moving_object.x] in possible_move_list
-            if self._exit_open and moving_object.x in range(24, 28) and new_y == 4:
-                self._puzzle_solved = True
-        elif direction == 'down':
-            new_y: int = moving_object.y + 1
-            in_borders = (new_y) in range(5, len(self._map))
-            is_empty = self._map[new_y][moving_object.x] in possible_move_list
-            if moving_object.x in [11, 12] and new_y == 38:
-                self.open_exit()
-        elif direction == 'right':
-            in_borders = (moving_object.x + 1) in range(7, len(self._map[10])-3)
-            is_empty = self._map[moving_object.y][moving_object.x +
-                                                  1] in possible_move_list
-        elif direction == 'left':
-            in_borders = (moving_object.x - 1) in range(7, len(self._map[10])-3)
-            is_empty = self._map[moving_object.y][moving_object.x -
-                                                  1] in possible_move_list
-        return in_borders and is_empty
+            if lower_line <= y <= upper_line:
+                print(line)
 
     def open_exit(self):
         self._map: list = Icons.tunnel_open.value.split('\n')
@@ -204,4 +186,4 @@ class Dungeon:
 # =========================================================================== #
 
 if __name__ == '__main__':
-    pass
+    Dungeon(Icons.tunnel_closed.value).start_quest()
