@@ -1,1 +1,8 @@
-/__pycache__
+### Python ###
+__pycache__/
+
+### VisualStudioCode ###
+.vscode/*
+
+### EXECUTABLE ###
+build/
