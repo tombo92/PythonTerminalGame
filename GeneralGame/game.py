@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.0
+# @Version : 1.1.0
 """
 General Terminal Game Class
 """

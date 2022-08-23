@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.2
+# @Version : 1.1.0
 """
 Abstract Riddle Class
 """
@@ -14,6 +14,7 @@ Abstract Riddle Class
 # =========================================================================== #
 from abc import ABC, abstractmethod
 import time
+from GeneralGame.helper_functions import rainbow_str
 from GeneralGame.icons import Icons
 from GeneralGame.player import Player
 
@@ -56,7 +57,7 @@ class Riddle(ABC):
             time.sleep(1)
         self._give_necessary_information()
         if self.debug:
-            print(f"The correct answer is: {self.correct_answer}")
+            print(rainbow_str(f"The correct answer is: {self.correct_answer}"))
         if self._ask_for_answer_and_compare():
             time.sleep(2)
             self._print_success_message()

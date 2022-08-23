@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.2
+# @Version : 1.1.0
 """
 helper functions
 """
@@ -13,8 +13,10 @@ helper functions
 #  SECTION: Imports
 # =========================================================================== #
 import os
+import random
 import string
 import time
+from colorama import Style
 
 
 # =========================================================================== #
@@ -73,6 +75,34 @@ def encode_text(plaintext: str, key: str) -> str:
 
 def split_dialog(dialog: str) -> list[str]:
     return dialog.split('###')
+
+
+def replace_character(new_char: str, old_string: str, pos: int) -> str:
+    old_string_list: list = list(old_string)
+    old_string_list[pos] = new_char
+    return "".join(old_string_list)
+
+
+def rainbow_str(uncolored_str: str) -> str:
+    """
+    give each letter of a string a different random color
+
+    Parameters
+    ----------
+    uncolored_str : str
+         a uncolred string
+
+    Returns
+    -------
+    str
+        colored string
+    """
+    colors = [f'\033[3{i}m' for i in range(
+        1, 8)] + [f'\033[9{i}m' for i in range(0, 7)] + ['']
+    color_str: str = ''
+    for letter in uncolored_str:
+        color_str += random.choice(colors) + f"{letter}{Style.RESET_ALL}"
+    return color_str
 
 
 # =========================================================================== #

@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.0
+# @Version : 1.1.0
 """
 Dialog Enum Classes
 - a '###' will be replaced with a new line and a short pause
@@ -57,17 +57,17 @@ class Prolog(StrEnum):
         "rating them with the following system (and yes, you have paper and " + \
         "pencil, who yould go on such an adventure without it): "
 
-    LEVEL_6_A = "Can a a day possibly better start than almost falling down a" + \
+    LEVEL_6_A = "Can a day possibly better start than almost falling down a" + \
         " tree? ... who needs coffee, right?!###Up on the tree you were able to" + \
         " see some sun light. That has changed down here ...###"
     LEVEL_6_B = "you are trying to find a way through dense bushes ... there must be a path"
     LEVEL_6_C = "...###It seems impossible to penetrate this wall of thorns.###" + \
         "You have already scratches all over your body and only a meter sight range###" + \
-        "You spot a gap in this planty hell ...###one last move and ...###" + \
+        "You spot a gap in this planty hell ...###One last move and ...### ###" + \
         "You are falling into a huge hole###.###\t..###\t\t..."
-    LEVEL_6_D = "you survied the fall (more or less) and finding youself in a dark cave."
+    LEVEL_6_D = "you survived the fall (more or less) and finding youself in a dark cave."
     LEVEL_6_E = "Who could have thought that you would end up in an even darker place###" + \
-        "Things can can ('will' in case of this game) alway go worse ... you hear the" + \
+        "Things can ('will' in case of this game) keep getting worse ... you hear the" + \
         " wheeze of a big creature###For sure it is not a sweet monster from 'Monsters, Inc.'" + \
         "###You should find a way out of this cave as fast a possible ..."
 
@@ -114,7 +114,8 @@ class Success(StrEnum):
     LEVEL_5_A = "It seems today is your lucky day, with a survival propability of"
     LEVEL_5_B = "you made it to the 'save' ground."
 
-    LEVEL_6 = ''
+    LEVEL_6 = 'Hey Mr. Indianer Jones, you mastered the cave and found a way out.###' + \
+        "Let's continue the journey and maybe you mind your next step.### ###"
 
     LEVEL_7_A = "Perfect move ... it is official, you are smarter than these " + \
         "beasts (you probably have noticed, almost none of them went to school)###" + \
@@ -163,7 +164,8 @@ class Failure(StrEnum):
     LEVEL_5_B = "the path you've choosen was too dangerous and you fell to the ground " + \
         " you know what that means ..."
 
-    LEVEL_6 = ''
+    LEVEL_6 = 'It seemed like the monster had a better sense of direction than you. ###' + \
+        "But you are in his living room and it is quite dark, don't be sad ... ###\t\tyou HAD a great life"
 
     LEVEL_7 = "Why did you even try to find the pattern, when you are not smart " + \
         "enough to forcast the next move?###WHY????###The monsters are tearing you into pieces ...### "
@@ -203,7 +205,8 @@ class Info(StrEnum):
         "From your position you are able to find a view possible paths, " + \
         "that can be described like that: "
 
-    LEVEL_6 = ''
+    LEVEL_6 = ' ###Don\'t get to close to the monster, it seemed not be too friendly ...' + \
+        "###Or at least not polite, who would make such noises as a real gentlemen/lady.\n\n"
 
     LEVEL_7 = "You are faster than these \"vampire wookies\" but more " + \
         "and more are following you.###\tWhen they try to attack you from " + \
