@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.0.2
+# @Version : 1.1.0
 """
 Levels of the DeepIntoTheForest game
 """
@@ -29,7 +29,7 @@ from GeneralGame.dungeon_quest import Dungeon
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
-VERSION = "1.0.3"
+VERSION = "1.1.0"
 YEAR = 2022
 # =========================================================================== #
 #  SECTION: Class definitions
@@ -72,7 +72,7 @@ class ForestLevel0(Riddle):
         print_lines([
             "\t \x1B[1m1\033[0m. Use whatever you like (except the internet of cause).",
             "\t \x1B[1m2\033[0m. After you die you have to start from the beginning" +
-            "(yes, you heard right: reincarnation).",
+            " (you heard right: reincarnation).",
             "\t \x1B[1m3\033[0m. Sometimes you have to press enter to continue your journey.",
             "\t \x1B[1m4\033[0m. Most of the time it is enough to enter the first letter of the possible answers.",
             "\t \x1B[1m5\033[0m. All necessary information are automatically copied into the clipboard.",
@@ -308,7 +308,7 @@ class ForestLevel5(Riddle):
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_5_A) +
                     [f"{self.player.name} {Failure.LEVEL_5_B}"], 1)
-        input()
+        input('')
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))
@@ -368,6 +368,8 @@ class ForestLevel6(Riddle):
     def _print_icon_and_lives(self):
         print(Label.LEVEL_6)
         print(f"\t{self._return_life_icons()}\n")
+        print("\n\033[1;4mATTENTION\033[0m: Exterminators are to expensive for the developer," +
+              " maybe some bugs can be found in this level.\n")
 
     def _print_prolog(self):
         print_lines(split_dialog(Prolog.LEVEL_6_A) +
@@ -379,17 +381,16 @@ class ForestLevel6(Riddle):
 
     def _print_success_message(self):
         clear_terminal()
-        print('winner')
-        input()
+        print_lines(split_dialog(Success.LEVEL_6), 2)
 
     def _print_fail_message(self):
         clear_terminal()
-        print('loser')
-        input()
+        print_lines(split_dialog(Failure.LEVEL_6), 3)
+        input('')
 
     def _give_necessary_information(self):
-        addToClipBoard('info')
-        print_lines(['some info'], 2)
+        addToClipBoard('Use the arrow keys on the keyboard and nothing else ... it is not that difficult, isn\'t it')
+        print_lines(split_dialog(Info.LEVEL_6), 2)
 
     def _calculate_correct_answer(self) -> tuple:
         pass
@@ -424,7 +425,7 @@ class ForestLevel7(Riddle):
 
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_7), 3)
-        input()
+        input('')
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data[1]))
@@ -482,7 +483,7 @@ class ForestLevel8(Riddle):
 
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_8), 4)
-        input()
+        input('')
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))

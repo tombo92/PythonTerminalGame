@@ -5,7 +5,7 @@
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
 # @Link    : https://patorjk.com/software/taag/
-# @Version : 1.0.2
+# @Version : 1.1.0
 """
 Ascii Art Labels
 """
