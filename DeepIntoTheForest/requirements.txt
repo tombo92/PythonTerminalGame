@@ -1,0 +1,4 @@
+StrEnum
+keyboard
+colorama
+emoji
