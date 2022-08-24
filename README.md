@@ -10,7 +10,9 @@ This program is a mixture out of a general and specific terminal games. The game
 * Success &rarr; success notification after the puzzle is solved
 * Fail &rarr; fail notification after the answer is wrong
 
- #### DeepIntoTheForest Game
+ #### DeepIntoTheForest Game 
+ **VERSION 1.1.1**
+ 
  ![DeepIntoTheForestIcon](https://github.com/tombo92/PythonTerminalGame/blob/master/DeepIntoTheForest/app.ico?raw=true)|
  
 A good intro ...
