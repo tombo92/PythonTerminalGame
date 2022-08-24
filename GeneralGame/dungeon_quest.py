@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.1.0
+# @Version : 1.2.0
 """
 dugeon game
 --> buggy!!! has to be refactored!
@@ -57,6 +57,14 @@ class MovingObject(ABC):
     @property
     def symbol(self) -> emoji:
         return self._symbol
+
+    @x.setter
+    def x(self, value: int) -> None:
+        self._x = value
+
+    @y.setter
+    def y(self, value: int) -> None:
+        self._y = value
     # ----------------------------------------------------------------------- #
     #  SUBSECTION: Public Methods
     # ----------------------------------------------------------------------- #
@@ -79,6 +87,12 @@ class MovingObject(ABC):
         y_exit_range = 3
         return (self._x + x_shift) in x_exit_range and (self._y + y_shift) == y_exit_range
 
+    def _perform_move(self, x_shift: int = 0, y_shift: int = 0, repeat: int = 1) -> None:
+        for _ in range(repeat):
+            if self._inside_borders(x_shift, y_shift) and self._spot_is_empty(x_shift, y_shift):
+                self._x += x_shift
+                self._y += y_shift
+
 
 class Passenger(MovingObject):
 
@@ -91,10 +105,8 @@ class Passenger(MovingObject):
         self._map: list = dungeon_map
 
     def move(self, x_shift: int = 0, y_shift: int = 0):
-        if self._inside_borders(x_shift, y_shift) and self._spot_is_empty(x_shift, y_shift):
-            self._check_and_open_exit(x_shift, y_shift)
-            self._x += x_shift
-            self._y += y_shift
+        self._perform_move(x_shift, y_shift)
+        self._check_and_open_exit(x_shift, y_shift)
 
     def _check_and_open_exit(self, x_shift: int = 0, y_shift: int = 0):
         if (self._x + x_shift) in [11, 12] and (self._y + y_shift) == 37:
@@ -129,8 +141,17 @@ class Persecuter(MovingObject):
             y_shift: int = (pursued.y - self._y) // abs((pursued.y - self._y))
         else:
             y_shift = 0
-        for _ in range(1, self._range_counter // 40):
-            if self._inside_borders(x_shift, y_shift) and self._spot_is_empty(x_shift, y_shift):
+        if self._range_counter <= 40:
+            self._perform_move(x_shift, y_shift)
+        elif self._range_counter <= 200:
+            self._perform_move(x_shift, y_shift, 2)
+        else:
+            self._perform_move(x_shift, y_shift, 3)
+
+    def _perform_move(self, x_shift: int = 0, y_shift: int = 0, repeat: int = 1) -> None:
+        for _ in range(repeat):
+            killed_persued: bool = (self._pursued_x, self._pursued_y) != (self._x, self._y)
+            if self._inside_borders(x_shift, y_shift) and self._spot_is_empty(x_shift, y_shift) and killed_persued:
                 self._x += x_shift
                 self._y += y_shift
 
@@ -158,9 +179,12 @@ class Dungeon:
                 self._pursued.move(y_shift=-1)
                 if self._pursued.opend_exit and not self._exit_open:
                     rainbow = False
-                    self.open_exit()
+                    self._open_exit()
                 elif self._pursued.y <= 3:
                     break
+                elif self._pursued.y <= 23 and self._persecuter.y >= 38:
+                    self._persecuter.x = 36
+                    self._persecuter.y = 36
             elif event.key == keyboard.Key.down:
                 self._pursued.move(y_shift=1)
             elif event.key == keyboard.Key.left:
@@ -171,6 +195,7 @@ class Dungeon:
                     rainbow: bool = True
             else:
                 continue
+
             self._persecuter.move(self._pursued)
             time.sleep(0.05)
             clear_terminal()
@@ -194,12 +219,11 @@ class Dungeon:
                 line = replace_character('O', line, self._pursued.x)
             if rainbow:
                 line = rainbow_str(line)
-            line = line.replace('X', self._persecuter.symbol)
-            line = line.replace('O', self._pursued.symbol)
+            line = self._add_color(line)
             if lower_line <= y <= upper_line:
                 print('\t' * 5 + line)
 
-    def open_exit(self):
+    def _open_exit(self):
         """
         open exit and change the map
         """
@@ -207,6 +231,13 @@ class Dungeon:
         self._exit_open: bool = True
         self._draw_dungeon()
         clear_terminal()
+
+    def _add_color(self, line: str) -> str:
+        line = line.replace('X', self._persecuter.symbol)
+        line = line.replace('O', self._pursued.symbol)
+        line = line.replace(f'E{self._persecuter.symbol}IT',
+                            f'{Fore.YELLOW}EXIT{Style.RESET_ALL}')
+        return line.replace('*', f'{Fore.YELLOW}*{Style.RESET_ALL}')
 
 
 # =========================================================================== #
