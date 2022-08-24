@@ -4,7 +4,7 @@
 # @Author  : Tom Brandherm
 # @Python  : 3.10
 # @Link    : https://github.com/tombo92
-# @Version : 1.1.0
+# @Version : 1.1.1
 """
 Levels of the DeepIntoTheForest game
 """
@@ -29,7 +29,7 @@ from GeneralGame.dungeon_quest import Dungeon
 # =========================================================================== #
 #  SECTION: Global definitions
 # =========================================================================== #
-VERSION = "1.1.0"
+VERSION = "1.1.1"
 YEAR = 2022
 # =========================================================================== #
 #  SECTION: Class definitions
@@ -66,7 +66,7 @@ class ForestLevel0(Riddle):
 
     def _print_fail_message(self):
         print(Failure.LEVEL_1)
-        input()
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         print_lines([
@@ -112,7 +112,7 @@ class ForestLevel1(Riddle):
 
     def _print_fail_message(self):
         print(Failure.LEVEL_1)
-        input()
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         print_lines(split_dialog(Info.LEVEL_1), 2)
@@ -154,7 +154,7 @@ class ForestLevel2(Riddle):
         elif int(self.answer) < self.correct_answer:
             print(Failure.LEVEL_2_B)
         print_lines(['.' * (i + 1) for i in range(3)], 1)
-        input()
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))
@@ -308,7 +308,7 @@ class ForestLevel5(Riddle):
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_5_A) +
                     [f"{self.player.name} {Failure.LEVEL_5_B}"], 1)
-        input('')
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))
@@ -386,7 +386,7 @@ class ForestLevel6(Riddle):
     def _print_fail_message(self):
         clear_terminal()
         print_lines(split_dialog(Failure.LEVEL_6), 3)
-        input('')
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard('Use the arrow keys on the keyboard and nothing else ... it is not that difficult, isn\'t it')
@@ -425,7 +425,7 @@ class ForestLevel7(Riddle):
 
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_7), 3)
-        input('')
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data[1]))
@@ -483,7 +483,7 @@ class ForestLevel8(Riddle):
 
     def _print_fail_message(self):
         print_lines(split_dialog(Failure.LEVEL_8), 4)
-        input('')
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data))

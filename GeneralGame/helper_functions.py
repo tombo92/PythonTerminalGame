@@ -99,10 +99,20 @@ def rainbow_str(uncolored_str: str) -> str:
     """
     colors = [f'\033[3{i}m' for i in range(
         1, 8)] + [f'\033[9{i}m' for i in range(0, 7)] + ['']
+    uncolored_str: str = reset_colors(uncolored_str)
     color_str: str = ''
     for letter in uncolored_str:
         color_str += random.choice(colors) + f"{letter}{Style.RESET_ALL}"
     return color_str
+
+
+def reset_colors(colored_str: str) -> str:
+    colors = [f'\033[3{i}m' for i in range(
+        1, 8)] + [f'\033[9{i}m' for i in range(0, 7)] + ['']
+    uncolored_str: str = colored_str.replace(Style.RESET_ALL, '')
+    for color in colors:
+        uncolored_str: str = uncolored_str.replace(color, '')
+    return uncolored_str
 
 
 # =========================================================================== #

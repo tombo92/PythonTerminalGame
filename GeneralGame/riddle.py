@@ -67,11 +67,16 @@ class Riddle(ABC):
         return False
 
     def _return_life_icons(self) -> str:
+        icon: str = ''
         if self.player.life_counter == 3:
-            return Icons.full_hearts
-        if self.player.life_counter == 2:
-            return Icons.two_hearts
-        return Icons.one_heart
+            icon = Icons.full_hearts
+        elif self.player.life_counter == 2:
+            icon = Icons.two_hearts
+        else:
+            icon = Icons.one_heart
+        if self.debug:
+            return rainbow_str(icon)
+        return icon
 
     @abstractmethod
     def _print_icon_and_lives(self):
