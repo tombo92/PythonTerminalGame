@@ -1,0 +1,161 @@
+# CI/CD Pipeline — PythonTerminalGame (DeepIntoTheForest)
+#
+# Stages:
+#   1. Tests   — ubuntu-latest, run on every push and PR
+#   2. Release — windows-latest (builds .exe), master branch only after tests pass
+#
+# After a release is published GitHub sends a webhook to the homeserver
+# (tombra.ddns.net/webhook/), which auto-deploys the tagged code on the Pi.
+# Configure the webhook in: GitHub → repo Settings → Webhooks
+#   Payload URL : https://tombra.ddns.net/webhook/
+#   Content type: application/json
+#   Secret      : value of HOMESERVER_WEBHOOK_SECRET on the Pi
+#   Events      : Releases
+
+name: CI/CD
+
+on:
+  push:
+    branches: ["**"]
+    paths-ignore:
+      - "**.md"
+      - ".gitignore"
+      - "LICENSE"
+      - "DeepIntoTheForest/dist/**"
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Stage 1 · Tests  (headless, no display needed — pynput is mocked)
+  # ---------------------------------------------------------------------------
+  tests:
+    name: "Stage 1 · Tests"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+  # ---------------------------------------------------------------------------
+  # Stage 2 · Version bump + .exe build + GitHub Release  (master only)
+  # ---------------------------------------------------------------------------
+  release:
+    name: "Stage 2 · Release"
+    needs: tests
+    runs-on: windows-latest
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies + PyInstaller
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: Determine version bump
+        id: bump
+        shell: bash
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          echo "Commit: $COMMIT_MSG"
+
+          CURRENT=$(cat VERSION 2>/dev/null || echo "1.1.1")
+          MAJOR=$(echo "$CURRENT" | cut -d. -f1)
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+          PATCH=$(echo "$CURRENT" | cut -d. -f3)
+
+          if echo "$COMMIT_MSG" | grep -qiE "^(feat!|fix!|refactor!|BREAKING CHANGE)"; then
+            MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0; BUMP_TYPE="major"
+          elif echo "$COMMIT_MSG" | grep -qiE "^feat(\(.+\))?:"; then
+            MINOR=$((MINOR + 1)); PATCH=0; BUMP_TYPE="minor"
+          else
+            PATCH=$((PATCH + 1)); BUMP_TYPE="patch"
+          fi
+
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          TAG="v${NEW_VERSION}"
+          echo "Bump: $BUMP_TYPE  $CURRENT → $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG"                 >> "$GITHUB_OUTPUT"
+          echo "$NEW_VERSION"            > VERSION
+
+      - name: Commit VERSION file
+        shell: bash
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add VERSION
+          git diff --cached --quiet || git commit -m "chore: bump version to ${{ steps.bump.outputs.new_version }} [skip ci]"
+          git push origin master
+
+      - name: Create annotated tag
+        shell: bash
+        run: |
+          git tag -a "${{ steps.bump.outputs.tag }}" \
+            -m "Release ${{ steps.bump.outputs.tag }}"
+          git push origin "${{ steps.bump.outputs.tag }}"
+
+      - name: Build exe with PyInstaller
+        run: >
+          python -m PyInstaller
+          --onefile
+          --icon=DeepIntoTheForest/app.ico
+          --dist=DeepIntoTheForest/dist/
+          DeepIntoTheForest/DeepIntoTheForest.py
+          --name DeepIntoTheForest
+
+      - name: Generate changelog snippet
+        id: changelog
+        shell: bash
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "${{ steps.bump.outputs.tag }}" | head -1 || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            LOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" -- . ':!VERSION' | head -20)
+          else
+            LOG=$(git log --pretty=format:"- %s" -- . ':!VERSION' | head -20)
+          fi
+          echo "log<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$LOG"     >> "$GITHUB_OUTPUT"
+          echo "EOF"      >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.bump.outputs.tag }}
+          name: "Release ${{ steps.bump.outputs.tag }}"
+          body: |
+            ## What changed
+            ${{ steps.changelog.outputs.log }}
+
+            ---
+            *Auto-released by CI/CD — homeserver webhook deploys to Pi automatically.*
+          files: DeepIntoTheForest/dist/DeepIntoTheForest.exe
+          draft: false
+          prerelease: false

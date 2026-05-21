@@ -1,4 +1,6 @@
 StrEnum
-keyboard
+pynput
 colorama
 emoji
+pytest>=7.0
+pytest-mock
