@@ -197,6 +197,7 @@ class ForestLevel3(Riddle):
     def _print_fail_message(self):
         print_lines([Failure.LEVEL_3_A,
                      f"{Failure.LEVEL_3_B}{self.player.name}{Failure.LEVEL_3_C}"], 3)
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         addToClipBoard(str(self.riddle_data[1]))
@@ -267,6 +268,7 @@ class ForestLevel4(Riddle):
 
     def _print_fail_message(self):
         print_lines([''] + split_dialog(Failure.LEVEL_4), 3)
+        input("\nPress Enter to continue...")
 
     def _give_necessary_information(self):
         pass
@@ -531,6 +533,7 @@ class ForestLevel9(ForestLevel1):
 
     def _print_fail_message(self):
         print_lines(split_dialog(Success.LEVEL_1.replace(" life", 'life ... AGAIN')) + [''], 2)
+        input("\nPress Enter to continue...")
 
     def _calculate_correct_answer(self):
         self.correct_answer: list = ['left', 'l']
