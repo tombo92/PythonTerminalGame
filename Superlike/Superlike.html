@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Superlike &#11088;</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #080812;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+      color: #fff; user-select: none; -webkit-user-select: none;
+    }
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .particle { position: absolute; animation: floatUp linear infinite; opacity: 0; pointer-events: none; }
+    @keyframes floatUp {
+      0%   { transform: translateY(105vh) rotate(0deg);   opacity: 0; }
+      8%   { opacity: 0.5; }
+      92%  { opacity: 0.2; }
+      100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+    }
+    #game {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 400px;
+      padding: 16px 16px 20px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 20px;
+    }
+    .logo { font-family: system-ui,sans-serif; font-size: 1.1rem; letter-spacing: 0.14em; font-weight: 300; color: rgba(255,255,255,0.45); text-transform: lowercase; }
+    .logo b { color: #ff4b8b; font-weight: 700; }
+    #stack { position: relative; width: 100%; height: 430px; }
+    .bg-card { position: absolute; inset: 0; border-radius: 22px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
+    .bg-card-1 { transform: scale(0.96) translateY(8px);  z-index: 1; }
+    .bg-card-2 { transform: scale(0.92) translateY(16px); z-index: 0; }
+    #card {
+      position: absolute; inset: 0;
+      border-radius: 22px; padding: 28px 26px 24px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; z-index: 2; gap: 10px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
+      cursor: grab; touch-action: none; will-change: transform;
+    }
+    #card:active { cursor: grabbing; }
+    .stamp {
+      position: absolute; top: 18px;
+      border: 3px solid; border-radius: 8px;
+      padding: 5px 13px;
+      font-family: system-ui,sans-serif;
+      font-size: 1.2rem; font-weight: 900;
+      letter-spacing: 0.06em; opacity: 0; pointer-events: none;
+    }
+    .stamp-nein { left: 16px;  color: #f87171; border-color: #f87171; transform: rotate(-14deg); }
+    .stamp-ja   { right: 16px; color: #4ade80; border-color: #4ade80; transform: rotate(13deg); }
+    .card-num   { position: absolute; top: 14px; right: 18px; font-family: system-ui,sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.28); }
+    .card-icon  { font-size: 3.6rem; margin-bottom: 4px; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.4)); }
+    .card-title { font-size: 1.55rem; font-weight: bold; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); line-height: 1.25; }
+    .card-sub   { font-size: 0.85rem; color: rgba(255,255,255,0.58); font-style: italic; margin-top: -2px; }
+    .card-body  { font-size: 0.96rem; line-height: 1.72; color: rgba(255,255,255,0.88); max-width: 310px; margin-top: 4px; }
+    @keyframes shake {
+      0%,100% { transform: rotate(0); }
+      14% { transform: rotate(-4deg) translateX(-8px); }
+      30% { transform: rotate( 4deg) translateX( 8px); }
+      46% { transform: rotate(-3deg) translateX(-5px); }
+      62% { transform: rotate( 3deg) translateX( 5px); }
+      78% { transform: rotate(-1.5deg); }
+    }
+    @keyframes flyRight { to { transform: rotate(22deg) translateX(140vw); opacity: 0; } }
+    @keyframes flyLeft  { to { transform: rotate(-22deg) translateX(-140vw); opacity: 0; } }
+    @keyframes popIn    { 0% { transform: scale(0.78); opacity: 0; } 55% { transform: scale(1.03); } 100% { transform: scale(1); opacity: 1; } }
+    #card.anim-shake     { animation: shake    0.45s ease; }
+    #card.anim-fly-right { animation: flyRight 0.42s ease forwards; }
+    #card.anim-fly-left  { animation: flyLeft  0.38s ease forwards; }
+    #card.anim-pop-in    { animation: popIn    0.36s ease; }
+    @keyframes burst { 0% { transform:translate(0,0) scale(0.3); opacity:1; } 100% { transform:translate(var(--bx),var(--by)) scale(1.1); opacity:0; } }
+    .burst { position: fixed; pointer-events: none; z-index: 80; animation: burst 0.7s ease-out forwards; font-size: 1.25rem; }
+    #buttons { display: flex; gap: 28px; align-items: center; }
+    .btn { border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; line-height: 1; transition: transform 0.13s, box-shadow 0.13s; }
+    .btn:active { transform: scale(0.87) !important; }
+    #btn-nein { width: 56px; height: 56px; background: rgba(255,255,255,0.06); border: 2px solid rgba(248,113,113,0.42); color: #f87171; box-shadow: 0 4px 18px rgba(248,113,113,0.15); }
+    #btn-nein:hover { transform: scale(1.08); }
+    #btn-ja   { width: 70px; height: 70px; background: linear-gradient(135deg,#ff4b8b,#df1054); color: #fff; box-shadow: 0 8px 28px rgba(255,75,139,0.52); }
+    #btn-ja:hover   { transform: scale(1.10); }
+    #btn-star { width: 56px; height: 56px; background: rgba(255,255,255,0.06); border: 2px solid rgba(96,165,250,0.42); color: #60a5fa; box-shadow: 0 4px 18px rgba(96,165,250,0.15); }
+    #btn-star:hover { transform: scale(1.08); }
+    .btn-gone { visibility: hidden !important; pointer-events: none !important; }
+    #dots { display: flex; gap: 5px; align-items: center; }
+    .dot { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.16); width: 5px; transition: all 0.3s; }
+    .dot.done   { background: rgba(255,75,139,0.5); }
+    .dot.active { background: rgba(255,255,255,0.82); width: 18px; }
+    #toast {
+      position: fixed; bottom: 108px; left: 50%; transform: translateX(-50%);
+      background: rgba(12,10,32,0.92); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px; padding: 10px 22px;
+      font-family: system-ui,sans-serif; font-size: 0.87rem;
+      color: rgba(255,255,255,0.9); z-index: 90; opacity: 0;
+      transition: opacity 0.28s; pointer-events: none;
+      max-width: 280px; text-align: center;
+    }
+    #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200; display: none; }
+    #final {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      background: rgba(8,8,18,0.97);
+      flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 32px; gap: 18px;
+    }
+    #final.show { display: flex; }
+    .f-icon  { font-size: 5rem; line-height: 1; animation: popIn 0.5s ease; }
+    .f-title { font-size: 1.8rem; font-weight: bold; color: #ffd700; text-shadow: 0 0 38px rgba(255,215,0,0.45); }
+    .f-body  { font-size: 1.02rem; line-height: 1.78; color: rgba(255,255,255,0.88); max-width: 300px; }
+    .f-sub   { font-size: 0.83rem; color: rgba(255,255,255,0.35); font-family: system-ui,sans-serif; letter-spacing: 0.09em; margin-top: 4px; }
+    #btn-replay {
+      margin-top: 8px; padding: 12px 30px;
+      background: linear-gradient(135deg,#ff4b8b,#df1054);
+      color: #fff; border: none; border-radius: 28px;
+      font-family: system-ui,sans-serif; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 8px 26px rgba(255,75,139,0.45);
+      transition: transform 0.13s;
+    }
+    #btn-replay:hover { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+<div id="particles"></div>
+<canvas id="confetti"></canvas>
+<div id="game">
+  <div class="logo">super<b>like</b> &#11088;</div>
+  <div id="stack">
+    <div class="bg-card bg-card-2"></div>
+    <div class="bg-card bg-card-1"></div>
+    <div id="card">
+      <span class="stamp stamp-nein" id="stamp-nein">NEIN</span>
+      <span class="stamp stamp-ja"   id="stamp-ja">JA &#9829;</span>
+      <span class="card-num"   id="card-num"></span>
+      <span class="card-icon"  id="card-icon"></span>
+      <div  class="card-title" id="card-title"></div>
+      <div  class="card-sub"   id="card-sub"></div>
+      <div  class="card-body"  id="card-body"></div>
+    </div>
+  </div>
+  <div id="buttons">
+    <button id="btn-nein" class="btn">&#10005;</button>
+    <button id="btn-ja"   class="btn">&#9829;</button>
+    <button id="btn-star" class="btn">&#11088;</button>
+  </div>
+  <div id="dots"></div>
+</div>
+<div id="toast"></div>
+<div id="final">
+  <div class="f-icon">&#128141;</div>
+  <div class="f-title">1 Jahr verheiratet</div>
+  <div class="f-body">
+    Alles begann mit einem Superlike.<br><br>
+    Du bist die sch&ouml;nste Entscheidung meines Lebens.<br>
+    Ich w&uuml;rde dich jederzeit wieder <em>superliked</em>.<br><br>
+    F&uuml;r immer dein. &#9829;
+  </div>
+  <div class="f-sub">04.10.2016 &rarr; heute &rarr; f&uuml;r immer</div>
+  <button id="btn-replay">&#8617; Nochmal von vorne</button>
+</div>
+<script>
+(function () {
+  var CARDS = [
+    { icon: '\uD83D\uDCF1', bg: 'linear-gradient(145deg,#12103a,#241863,#1e153d)',
+      title: '2016', sub: 'Eine Geschichte beginnt\u2026',
+      body: 'Tinder. Ein Wisch nach rechts.\nEin paar Chats, nichts Ernstes.\n\nDann \u2014 ein Superlike.' },
+    { icon: '\uD83C\uDF93', bg: 'linear-gradient(145deg,#101828,#1c3557,#0f2644)',
+      title: 'Das Foto', sub: 'Zeugnisvergabe',
+      body: 'Er \u2014 grinsend wie ein Honigkuchenpferd.\nHemd, Hosentr\u00e4ger, Fliege.\n\n\u201eToo interessant, um ihn vorbeizuwischen.\u201c \u2014 Vicky' },
+    { icon: '\uD83D\uDCAC', bg: 'linear-gradient(145deg,#0a1f1f,#0d4040,#113030)',
+      title: '1.000+ Nachrichten', sub: 'In wenigen Tagen',
+      body: 'Lieblingsfilme, peinliche Geschichten,\ndie gro\u00dfen und kleinen Fragen des Lebens.\n\nJedes Mal wenn das Handy leuchtete \u2014 ein Grinsen.' },
+    { icon: '\uD83E\uDD5E', bg: 'linear-gradient(145deg,#22102e,#4a1c6a,#311548)',
+      title: 'Das erste Date', sub: 'Friedrichstra\u00dfe, Kanal',
+      body: 'Ein \u00f6sterreichisches Brunch-Restaurant.\nNur ein schnelles Fr\u00fchst\u00fcck.\n\nAus einer Stunde wurden acht.' },
+    { icon: '\u2600\uFE0F', bg: 'linear-gradient(145deg,#2a1800,#6b3800,#8a4f00)',
+      title: 'Berlin zu zweit', sub: 'Burritos \u00b7 Eis \u00b7 Museumsinsel',
+      body: 'Die Sonne schien.\nSie lernte f\u00fcr eine Klausur.\nEr fragte ab.\n\nIrgendwann lag sie in seinem Arm.' },
+    { icon: '\uD83D\uDC8B', bg: 'linear-gradient(145deg,#2a0618,#78113a,#950c2e)',
+      title: 'Der Abschiedskuss', sub: 'An der U-Bahn',
+      body: 'Spontan. Kurz.\nAber unmissverst\u00e4ndlich.\n\nEine klare Botschaft:\nIch will mehr.' },
+    { icon: '\uD83C\uDF27\uFE0F', bg: 'linear-gradient(145deg,#111118,#1e1e2e,#2a2a3e)',
+      title: 'Die schwere Zeit', sub: 'Tempelhofer Feld',
+      body: 'Mamas Gesundheit. Krakau.\nEine Beziehung f\u00fchlte sich\nwie eine Last an.\n\nSchweren Herzens. Aber das Schicksal hatte andere Pl\u00e4ne.' },
+    { icon: '\uD83E\uDD2B', bg: 'linear-gradient(145deg,#08080f,#100d25,#180f30)',
+      title: '14 Tage Stille', sub: 'Jenjas Verbot',
+      body: 'Kein Anruf. Keine Nachricht. Nichts.\n\nSie muss selbst erkennen, was sie will. \u2014 Jenja\n\nInnerlich: Diese Frau ist zu besonders.' },
+    { icon: '\uD83D\uDCE6', bg: 'linear-gradient(145deg,#1c0e00,#562400,#7a3200)',
+      title: 'Surprise Enterprise AG', sub: 'Ein Zeichen setzen',
+      body: 'Briefe. Eine frische Rose.\nIhr Lieblingsgetr\u00e4nk.\nLukas in der blauen Regenjacke als Kurier.\n\nVickys Vater \u00f6ffnete die T\u00fcr. \uD83D\uDE04' },
+    { icon: '\u23F3', bg: 'linear-gradient(145deg,#001810,#00391e,#004d28)',
+      title: 'Die l\u00e4ngste Wartezeit', sub: 'Stundenlang \u2014 kein Zeichen',
+      body: 'Er wusste genau, wann das Paket ankam.\nJede Sekunde eine Ewigkeit.\n\nDann, endlich \u2014 ihre Nachricht.\nDas Herz ber\u00fchrt.' },
+    { icon: '\uD83C\uDF42', bg: 'linear-gradient(145deg,#281000,#6a2800,#8a3c00)',
+      title: '4. Oktober 2016', sub: 'Ein Restaurant, stundenlang',
+      body: 'Stundenlange Gespr\u00e4che.\nDer Elefant im Raum \u2014\ndoch keiner sprach ihn aus.\n\nBis sie auf der Couch sa\u00dfen.' },
+    { icon: '\uD83D\uDC91', bg: 'linear-gradient(145deg,#001e10,#004a26,#006638)',
+      title: 'Lass es uns versuchen.', sub: '04.10.2016 \u2014 Offiziell',
+      body: 'Drei Worte, die alles ver\u00e4nderten.\n\nWas mit einem Superlike begann,\nnahm Umwege \u2014 und f\u00fchrte zur\nsch\u00f6nsten Entscheidung zweier Leben.' },
+    { icon: '\uD83D\uDC8D', bg: 'linear-gradient(145deg,#1a1400,#3d3200,#5c4c00)',
+      title: '1 Jahr verheiratet', sub: 'F\u00fcr immer \u2665',
+      body: 'Alles begann mit einem Superlike.\n\nAlles Liebe zum ersten Jahrestag,\nmein Schatz. \uD83E\uDD42',
+      final: true }
+  ];
+
+  var NEIN = [
+    'Das Schicksal l\u00e4sst sich nicht ablehnen \uD83D\uDE04',
+    'Probier es nochmal \u2014 du wei\u00dft was du willst! \uD83D\uDE0F',
+    'Nein ist keine Option in dieser Geschichte \uD83D\uDCAB',
+    'Komm schon... swipe rechts! \u27A1\uFE0F',
+    'Wirklich? Diesen Moment willst du \u00fcberspringen? \uD83D\uDE09'
+  ];
+
+  var idx = 0, animating = false, neinCount = 0;
+  var dragStartX = null, dragging = false, dragDx = 0;
+
+  // Particles
+  var pEl = document.getElementById('particles');
+  var gl = ['\uD83D\uDC95','\u2728','\uD83C\uDF1F','\uD83D\uDCAB','\u2665','\u2B50','\uD83C\uDF38','\uD83D\uDC96','\u2726','\u00B7'];
+  for (var pi = 0; pi < 22; pi++) {
+    var p = document.createElement('span');
+    p.className = 'particle';
+    p.textContent = gl[pi % gl.length];
+    p.style.left = (Math.random()*100) + 'vw';
+    p.style.fontSize = (0.7 + Math.random()*0.9) + 'rem';
+    p.style.animationDuration = (9 + Math.random()*13) + 's';
+    p.style.animationDelay = (Math.random()*18) + 's';
+    pEl.appendChild(p);
+  }
+
+  function render() {
+    var c = CARDS[idx];
+    var card = document.getElementById('card');
+    card.style.background = c.bg;
+    document.getElementById('card-icon').textContent  = c.icon;
+    document.getElementById('card-title').textContent = c.title;
+    document.getElementById('card-sub').textContent   = c.sub;
+    document.getElementById('card-body').innerHTML    = c.body.replace(/\n/g, '<br>');
+    document.getElementById('card-num').textContent   = (idx + 1) + ' / ' + CARDS.length;
+    document.getElementById('stamp-nein').style.opacity = '0';
+    document.getElementById('stamp-ja').style.opacity   = '0';
+    var bN = document.getElementById('btn-nein');
+    var bS = document.getElementById('btn-star');
+    var bJ = document.getElementById('btn-ja');
+    if (c.final) { bJ.innerHTML = '\uD83E\uDD42'; bN.classList.add('btn-gone'); bS.classList.add('btn-gone'); }
+    else         { bJ.innerHTML = '\u2665';        bN.classList.remove('btn-gone'); bS.classList.remove('btn-gone'); }
+    var dots = document.getElementById('dots');
+    dots.innerHTML = '';
+    for (var i = 0; i < CARDS.length; i++) {
+      var d = document.createElement('div');
+      d.className = 'dot' + (i < idx ? ' done' : i === idx ? ' active' : '');
+      dots.appendChild(d);
+    }
+    card.classList.remove('anim-pop-in');
+    void card.offsetWidth;
+    card.classList.add('anim-pop-in');
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    clearTimeout(toastTimer);
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.style.opacity = '1';
+    toastTimer = setTimeout(function () { el.style.opacity = '0'; }, 2400);
+  }
+
+  function burstHearts(x, y) {
+    var gs = ['\u2665','\uD83D\uDC95','\u2728','\uD83D\uDC96','\u2B50'];
+    [[-55,-75],[-85,-30],[-70,35],[-28,78],[28,-78],[82,-32],[68,38],[30,75]].forEach(function (d) {
+      var h = document.createElement('span');
+      h.className = 'burst';
+      h.textContent = gs[Math.floor(Math.random()*gs.length)];
+      h.style.left = x + 'px'; h.style.top = y + 'px';
+      h.style.setProperty('--bx', d[0] + 'px');
+      h.style.setProperty('--by', d[1] + 'px');
+      document.body.appendChild(h);
+      setTimeout(function () { h.parentNode && h.parentNode.removeChild(h); }, 800);
+    });
+  }
+
+  function advance(dir) {
+    if (animating) return;
+    animating = true;
+    var card = document.getElementById('card');
+    document.getElementById(dir === 'right' ? 'stamp-ja' : 'stamp-nein').style.opacity = '1';
+    var r = document.getElementById('btn-ja').getBoundingClientRect();
+    burstHearts(r.left + r.width / 2, r.top + r.height / 2);
+    var cls = dir === 'right' ? 'anim-fly-right' : 'anim-fly-left';
+    var flyDur = dir === 'right' ? 520 : 480; // CSS duration + 100 ms buffer
+    card.classList.add(cls);
+    var done = false;
+    function finish() {
+      if (done) return; done = true;
+      card.removeEventListener('animationend', onEnd);
+      card.classList.remove(cls);
+      card.style.transform = '';
+      idx++;
+      animating = false;
+      if (idx >= CARDS.length) { celebrate(); }
+      else { render(); if (CARDS[idx].final) setTimeout(celebrate, 900); }
+    }
+    function onEnd() { finish(); }
+    card.addEventListener('animationend', onEnd);
+    setTimeout(finish, flyDur); // fallback: fires even if animationend never fires (mobile)
+  }
+
+  function onNein() {
+    if (animating) return;
+    var card = document.getElementById('card');
+    document.getElementById('stamp-nein').style.opacity = '1';
+    card.classList.remove('anim-shake'); void card.offsetWidth;
+    card.classList.add('anim-shake');
+    var done = false;
+    function finish() {
+      if (done) return; done = true;
+      card.removeEventListener('animationend', onEnd);
+      card.classList.remove('anim-shake');
+      document.getElementById('stamp-nein').style.opacity = '0';
+    }
+    function onEnd() { finish(); }
+    card.addEventListener('animationend', onEnd);
+    setTimeout(finish, 600); // CSS shake is 0.45 s; 600 ms fallback for mobile
+    showToast(NEIN[neinCount++ % NEIN.length]);
+  }
+
+  function onJa()   { if (!animating) { if (CARDS[idx].final) celebrate(); else advance('right'); } }
+  function onStar() { if (!animating) { showToast('\u2B50 Superlike!'); advance('right'); } }
+
+  document.getElementById('btn-nein').addEventListener('click', onNein);
+  document.getElementById('btn-ja').addEventListener('click', onJa);
+  document.getElementById('btn-star').addEventListener('click', onStar);
+  document.getElementById('btn-replay').addEventListener('click', function () {
+    document.getElementById('final').classList.remove('show');
+    idx = 0; neinCount = 0; animating = false; render();
+  });
+
+  var cardEl = document.getElementById('card');
+  function dragMove(x) {
+    if (!dragging || animating) return;
+    dragDx = x - dragStartX;
+    if (Math.abs(dragDx) < 5) return;
+    cardEl.style.transition = 'none';
+    cardEl.style.transform = 'translateX(' + (dragDx*0.55) + 'px) rotate(' + (dragDx*0.055) + 'deg)';
+    document.getElementById('stamp-nein').style.opacity = dragDx < -30 ? Math.min(1, (-dragDx-30)/60) : '0';
+    document.getElementById('stamp-ja').style.opacity   = dragDx >  30 ? Math.min(1,  (dragDx-30)/60) : '0';
+  }
+  function dragEnd() {
+    if (!dragging) return; dragging = false;
+    cardEl.style.transition = ''; cardEl.style.transform = '';
+    document.getElementById('stamp-nein').style.opacity = '0';
+    document.getElementById('stamp-ja').style.opacity   = '0';
+    if      (dragDx >  90) advance('right');
+    else if (dragDx < -90) onNein();
+  }
+  cardEl.addEventListener('mousedown',  function (e) { if (!animating) { dragStartX = e.clientX; dragging = true; dragDx = 0; } });
+  window.addEventListener('mousemove',  function (e) { dragMove(e.clientX); });
+  window.addEventListener('mouseup',    dragEnd);
+  cardEl.addEventListener('touchstart', function (e) { if (!animating) { dragStartX = e.touches[0].clientX; dragging = true; dragDx = 0; } }, { passive: true });
+  window.addEventListener('touchmove',  function (e) { dragMove(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchend',   dragEnd);
+  document.addEventListener('keydown',  function (e) {
+    if (e.key==='ArrowRight'||e.key==='Enter') onJa();
+    if (e.key==='ArrowLeft')  onNein();
+    if (e.key===' ')          onStar();
+  });
+
+  function celebrate() {
+    var cv = document.getElementById('confetti');
+    cv.style.display = 'block';
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    var ctx = cv.getContext('2d');
+    var C = ['#ff4b8b','#ffd700','#60a5fa','#4ade80','#a78bfa','#fb923c','#f9a8d4'];
+    var S = ['\u2665','\u2B50','\u2728','\uD83D\uDC95','\uD83C\uDF1F','\u25C6','\u2022'];
+    var pcs = [];
+    for (var i = 0; i < 130; i++) pcs.push({ x: Math.random()*cv.width, y: -20-Math.random()*300, vx:(Math.random()-0.5)*4, vy:1.8+Math.random()*3.5, shape:S[~~(Math.random()*S.length)], color:C[~~(Math.random()*C.length)], size:13+Math.random()*14, rot:Math.random()*360, rs:(Math.random()-0.5)*7 });
+    var fr = 0;
+    (function draw() {
+      ctx.clearRect(0,0,cv.width,cv.height);
+      pcs.forEach(function(p){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.rot+=p.rs; if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width;} ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color; ctx.font=p.size+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(p.shape,0,0); ctx.restore(); });
+      if (++fr < 340) requestAnimationFrame(draw); else cv.style.display='none';
+    })();
+    setTimeout(function() { document.getElementById('final').classList.add('show'); }, 1200);
+  }
+
+  render();
+}());
+</script>
+</body>
+</html>
