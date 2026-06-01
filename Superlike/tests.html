@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Superlike – Test Runner</title>
+<style>
+body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #ddd; }
+h1 { font-size: 1.2rem; }
+#output { white-space: pre-wrap; line-height: 1.6; font-size: 0.85rem; }
+.pass { color: #6fbf73; }
+.fail { color: #f44747; }
+.summary { font-size: 1rem; margin-top: 16px; padding: 8px; border-radius: 4px; }
+.summary.ok { background: #1b3d1b; color: #6fbf73; }
+.summary.bad { background: #3d1b1b; color: #f44747; }
+</style>
+</head>
+<body>
+<h1>🧪 Superlike Test Runner</h1>
+<div id="output">Loading...</div>
+
+<script src="js/config.js"></script>
+<script src="js/story.js"></script>
+<script src="js/state.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/effects.js"></script>
+<!-- No renderer/engine needed for unit tests -->
+<script>
+// Stub DOM elements that effects.js needs
+document.body.insertAdjacentHTML('beforeend',
+  '<div id="toast-el" style="display:none"></div>' +
+  '<canvas id="confetti" style="display:none"></canvas>' +
+  '<div id="effects-layer" style="display:none"></div>');
+</script>
+<script src="js/tests.js"></script>
+<script>
+(function () {
+  var r = window.__testResults;
+  var out = document.getElementById('output');
+  if (!r) { out.textContent = 'No results.'; return; }
+  out.innerHTML = r.details.map(function (line) {
+    if (line.startsWith('✅')) return '<span class="pass">' + line + '</span>';
+    if (line.startsWith('❌')) return '<span class="fail">' + line + '</span>';
+    return line;
+  }).join('\n');
+  var cls = r.failed === 0 ? 'ok' : 'bad';
+  out.innerHTML += '\n<div class="summary ' + cls + '">' +
+    r.passed + ' passed, ' + r.failed + ' failed</div>';
+})();
+</script>
+</body>
+</html>
