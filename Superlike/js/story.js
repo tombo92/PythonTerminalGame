@@ -67,38 +67,53 @@ var Story = (function () {
     }
   ];
 
+  function shuffle(list) {
+    var arr = list.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  var decoyScenes = shuffle(['kevin', 'maximilian', 'jens']).map(function (id) {
+    return { type: 'profile', id: id, meta: { decoy: true }, music: 'theme_swipe' };
+  });
+
   var scenes = [
-    { type: 'title', music: 'theme_intro' },
+    { type: 'title', music: 'theme_intro' }
+  ]
     // Decoy profiles — Vicky swipes through other matches before Tom appears.
     // Engine treats `meta.decoy = true` as: nope → next, like/super → wrong-prince ending.
-    { type: 'profile', id: 'kevin',    meta: { decoy: true }, music: 'theme_swipe' },
-    { type: 'profile', id: 'maximilian', meta: { decoy: true }, music: 'theme_swipe' },
-    { type: 'profile', id: 'jens',     meta: { decoy: true }, music: 'theme_swipe' },
-    { type: 'profile', id: 'tom',      music: 'theme_swipe' },
-    { type: 'match',                   music: 'theme_chat' },
-    { type: 'chat', id: 'first_chat',  music: 'theme_chat' },
-    { type: 'chat', id: 'date_plan' },
-    { type: 'narration', id: 'traveling_to_date', music: 'theme_date' },
-    { type: 'narration', id: 'date_brunch' },
-    { type: 'choice', id: 'who_pays' },
-    { type: 'choice', id: 'after_brunch' },
-    { type: 'narration', id: 'walking_to_spree' },
-    { type: 'choice', id: 'at_spree' },
-    { type: 'choice', id: 'goodbye',   music: 'theme_kiss' },
-    { type: 'narration', id: 'after_kiss' },
-    { type: 'camera', id: 'sbahn_reflection' },
-    { type: 'choice', id: 'pill_choice' },
-    { type: 'chat', id: 'late_night_chat', music: 'theme_montage' },
-    { type: 'narration', id: 'messages_montage' },
-    { type: 'choice', id: 'first_meeting_parents' },
-    { type: 'choice', id: 'crisis',    music: 'theme_silence' },
-    { type: 'narration', id: 'silence' },
-    { type: 'narration', id: 'package_arrives', meta: { triggerHorrorIfNight: true }, music: 'theme_letters' },
-    { type: 'choice', id: 'letters' },
-    { type: 'narration', id: 'waiting' },
-    { type: 'choice', id: 'reunion',   music: 'theme_reunion' },
-    { type: 'ending', id: 'true' },
-  ];
+    .concat(decoyScenes)
+    .concat([
+      { type: 'profile', id: 'tom',      music: 'theme_swipe' },
+      { type: 'match',                   music: 'theme_chat' },
+      { type: 'chat', id: 'first_chat',  music: 'theme_chat' },
+      { type: 'chat', id: 'date_plan' },
+      { type: 'narration', id: 'traveling_to_date', music: 'theme_date' },
+      { type: 'narration', id: 'date_brunch' },
+      { type: 'choice', id: 'who_pays' },
+      { type: 'choice', id: 'after_brunch' },
+      { type: 'narration', id: 'walking_to_spree' },
+      { type: 'choice', id: 'at_spree' },
+      { type: 'choice', id: 'goodbye',   music: 'theme_kiss' },
+      { type: 'narration', id: 'after_kiss' },
+      { type: 'camera', id: 'sbahn_reflection' },
+      { type: 'choice', id: 'pill_choice' },
+      { type: 'chat', id: 'late_night_chat', music: 'theme_montage' },
+      { type: 'narration', id: 'messages_montage' },
+      { type: 'choice', id: 'first_meeting_parents' },
+      { type: 'choice', id: 'crisis',    music: 'theme_silence' },
+      { type: 'narration', id: 'silence' },
+      { type: 'narration', id: 'package_arrives', meta: { triggerHorrorIfNight: true }, music: 'theme_letters' },
+      { type: 'choice', id: 'letters' },
+      { type: 'narration', id: 'waiting' },
+      { type: 'choice', id: 'reunion',   music: 'theme_reunion' },
+      { type: 'ending', id: 'true' },
+    ]);
 
   // ─── Profile cards ──────────────────────────────────────────
   var profiles = {
@@ -154,8 +169,8 @@ var Story = (function () {
       messages: [
         { type: 'system', text: 'Ihr habt ein Match!' },
         { type: 'recv', text: 'Hey! Das Superlike hat mich ehrlich überrascht 😄' },
-        { type: 'recv', text: 'Das Foto mit Fliege und Hosenträgern ist echt gut. Wer hat das gemacht?' },
-        { type: 'recv', text: 'Und was studierst du, wenn ich fragen darf?' }
+        { type: 'recv', text: 'Das Foto mit Fliege und Hosenträgern steht dir richtig gut 😄' },
+        { type: 'recv', text: 'Was treibst du so, wenn du nicht gerade auf Tinder Superlikes verteilst?' }
       ],
       choices: [
         { id: 'bio_true', emoji: '🙈', text: 'Wirtschaftspsychologie im Master. Und du? Ich bin eigentlich nur für eine Freundin hier...', correct: true,
@@ -175,7 +190,7 @@ var Story = (function () {
         { type: 'system', text: '(Spoiler: Sie war die letzten 20 Jahre kein einziges Mal laufen.)' },
         { type: 'recv', text: 'Um halb 10 abends? Respekt 😄', delayBefore: 900 },
         { type: 'recv', text: 'Was hörst du eigentlich beim Laufen?' },
-        { type: 'sent', text: 'Gerade „Human" von Rag\'n\'Bone Man. Kennst du? Hammer Song.' },
+        { type: 'sent', text: 'Gerade „Human" von Rag\'n\'Bone Man. Kennst du das? Hammer Song.' },
         { type: 'recv', text: 'Krass, der Song läuft hier auch gerade 🎧 Zufall?', delayBefore: 1400 },
         { type: 'recv', text: 'Hey — sollen wir uns mal treffen?', delayBefore: 1100 },
         { type: 'sent', text: 'Ja gerne :) Ich kenn ein nettes österreichisches Restaurant am Kanal, Friedrichstraße. Samstag Brunch?' },
@@ -200,7 +215,7 @@ var Story = (function () {
         { type: 'time', text: 'Samstag, 23:47' },
         { type: 'recv', text: 'Gut zuhause angekommen?' },
         { type: 'sent', text: 'Ja, alles gut 🙂' },
-        { type: 'recv', text: 'Heute war... ich hab das nicht erwartet, ehrlich gesagt.' },
+        { type: 'recv', text: 'Gestern war schon krass — und heute direkt nochmal. Damit hab ich echt nicht gerechnet.' },
         { type: 'recv', text: 'Im positiven Sinne. Falls das nicht klar war 😅' },
         { type: 'sent', text: 'Ich auch nicht. War echt schön.' },
         { type: 'recv', text: 'Dienstag läuft übrigens „Die Höhle der Löwen". Falls du Lust hast — synchron schauen?' },
@@ -240,9 +255,10 @@ var Story = (function () {
         'Du findest ihn vor dem Edeka. Er steht da, lächelt nervös.<br>' +
         '„Hi, schön dich endlich zu sehen."<br><br>' +
         'Ihr lauft zusammen die paar Minuten zum Restaurant am Kanal.<br>' +
-        'Smalltalk. Ihr seid beide kurz angebunden — Aufregung.<br><br>' +
-        'Das österreichische Brunch-Lokal ist klein und voll.<br>' +
-        'Ihr esst, ihr redet. Schneller, als ihr denken könnt.<br><br>' +
+        'Draußen direkt am Wasser ist noch ein Tisch frei.<br>' +
+        'Kaum Leute, ruhige Stimmung, beide erst ein bisschen nervös.<br><br>' +
+        'Mit jedem Satz wird es leichter.<br>' +
+        'Ihr esst, ihr redet, und die Zeit rennt plötzlich weg.<br><br>' +
         'Anderthalb Stunden später — er bezahlt.<br>' +
         'Die Rechnung ist nicht ohne...',
       btnEmoji: '💸',
@@ -250,15 +266,15 @@ var Story = (function () {
     },
     walking_to_spree: {
       title: 'Zur Museumsinsel',
-      sub: 'Burrito in der Hand · Sonne im Gesicht',
+      sub: 'Museumsinsel · Sonne im Gesicht',
       body:
-        'Misha im Bahnhof — der beste Burrito-Stand der Stadt.<br>' +
-        'Ihr lauft Richtung Spree.<br><br>' +
+        'Ihr lauft Richtung Spree und setzt euch auf der Museumsinsel ans Wasser.<br>' +
+        'Kein großes Programm. Einfach Zeit zusammen.<br><br>' +
         'Er redet über Karate. Du über deine Masterarbeit.<br>' +
         'Er hört zu. Wirklich zu.<br>' +
         '(Wann hat das zuletzt einer getan?)<br><br>' +
-        'Die Museumsinsel kommt in Sicht.<br>' +
-        'Ihr setzt euch ans Wasser.',
+        'Später holt ihr euch noch einen Burrito bei Misha im Bahnhof.<br>' +
+        'Dann geht es langsam Richtung U-Bahn.',
       btnEmoji: '🌊',
       btnText: 'Weiter'
     },
@@ -267,7 +283,7 @@ var Story = (function () {
       sub: 'Mitternacht · S-Bahn nach Hause',
       body:
         'Er hat dich geküsst. An der U-Bahn. Aus dem Nichts.<br>' +
-        'Dein Gesichtsausdruck war: 50% überrascht, 50% Grinsen.<br><br>' +
+        'Dein Gesichtsausdruck war: 90% überrascht, 2% schockiert, 8% Grinsen.<br><br>' +
         'Du sitzt jetzt in der S-Bahn und realisierst, was passiert ist.<br>' +
         'Du grinst die ganze Fahrt über. Eine alte Dame fragt:<br>' +
         '„Verliebt?"<br><br>' +
@@ -284,7 +300,7 @@ var Story = (function () {
         'Ihr bestellt ein Fitness-Handtuch, das beide gut fanden 😂<br>' +
         'Lieblingsfilme, peinliche Geschichten, die großen Fragen.<br><br>' +
         'Sie hat einen altmodischen Kalender — Heiligtum.<br>' +
-        'Er notiert: <em>nächstes Date</em>. Sie streicht durch.<br>' +
+        'Er notiert nichts. Sie trägt ein: <em>nächstes Date</em> und streicht durch.<br>' +
         'Schreibt drüber: <em>UNSER nächstes Date</em>.<br><br>' +
         'Weitere Dates folgten. Alles fühlte sich richtig an.<br>' +
         'Bis...',
@@ -394,7 +410,7 @@ var Story = (function () {
       options: [
         { id: 'accept', emoji: '🙏', text: '"Danke, das ist lieb!"', toast: 'Nett — aber so war es nicht 😄' },
         { id: 'insist', emoji: '😤', text: '"Das war zu teuer! Ich zahl das nächste!"', correct: true,
-          toast: 'Genau! Und der nächste Stop war ein Burrito 🌯' },
+          toast: 'Genau! Erst ans Wasser, danach gab\'s Burrito 🌯' },
         { id: 'venmo', emoji: '💸', text: 'Direkt PayPal-Request schicken', toast: 'Romantic... 😂' }
       ]
     },
@@ -404,14 +420,14 @@ var Story = (function () {
       body: 'Das Frühstück war fantastisch.<br>Eigentlich war das Date „nur Brunch".<br>Aber irgendwie will keiner jetzt schon nach Hause...',
       options: [
         { id: 'leave', emoji: '👋', text: '"Ich muss leider los, war schön!"', end: 'short_date' },
-        { id: 'burrito', emoji: '🌯', text: '"Ich kenn da Misha im Bahnhof... Burrito?"', correct: true },
+        { id: 'burrito', emoji: '🌯', text: '"Lass uns erst an die Spree und danach bei Misha Burrito holen?"', correct: true },
         { id: 'river', emoji: '🌊', text: '"Lass uns an die Spree!"',
-          toast: 'Fast richtig! Aber erst kam der Burrito 🌯' }
+          toast: 'Fast richtig! Den Burrito gab\'s danach bei Misha 🌯' }
       ]
     },
     at_spree: {
       title: 'An der Spree',
-      sub: 'Die Sonne scheint · Burritos gegessen · Museumsinsel',
+      sub: 'Die Sonne scheint · Museumsinsel',
       body:
         'Ihr liegt im Park. Er fragt dich für eine Klausur ab.<br>' +
         'Irgendwann wird es still.<br>Er sitzt neben dir, Arm ausgestreckt...',

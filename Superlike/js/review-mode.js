@@ -363,10 +363,12 @@
     lines.push('---');
     lines.push('');
 
-    // Group by severity desc
+    // Group by severity desc (use explicit undefined check — 0 is falsy so || fallback was wrong)
     var order = { critical: 0, high: 1, medium: 2, low: 3 };
     var sorted = annotations.slice().sort(function (a, b) {
-      return (order[a.severity] || 9) - (order[b.severity] || 9);
+      var oa = order[a.severity] !== undefined ? order[a.severity] : 9;
+      var ob = order[b.severity] !== undefined ? order[b.severity] : 9;
+      return oa - ob;
     });
 
     sorted.forEach(function (a, i) {
