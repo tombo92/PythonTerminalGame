@@ -304,7 +304,8 @@
       if (idx >= CARDS.length) { celebrate(); }
       else { render(); if (CARDS[idx].final) setTimeout(celebrate, 900); }
     }
-    function onEnd() { finish(); }
+    var flyName = dir === 'right' ? 'flyRight' : 'flyLeft';
+    function onEnd(e) { if (e.animationName === flyName) finish(); }
     card.addEventListener('animationend', onEnd);
     setTimeout(finish, flyDur); // fallback: fires even if animationend never fires (mobile)
   }
@@ -322,7 +323,7 @@
       card.classList.remove('anim-shake');
       document.getElementById('stamp-nein').style.opacity = '0';
     }
-    function onEnd() { finish(); }
+    function onEnd(e) { if (e.animationName === 'shake') finish(); }
     card.addEventListener('animationend', onEnd);
     setTimeout(finish, 600); // CSS shake is 0.45 s; 600 ms fallback for mobile
     showToast(NEIN[neinCount++ % NEIN.length]);
