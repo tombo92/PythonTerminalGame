@@ -51,5 +51,29 @@
 <script src="js/effects.js"></script>
 <script src="js/renderer.js"></script>
 <script src="js/engine.js"></script>
+<script>
+  // Review-mode hooks (hidden — only used when the secret reviewer mode is active)
+  window.GAME_ID = 'superlike';
+  window.__reviewContext = function () {
+    try {
+      var idx = (window.State && State.getScene) ? State.getScene() : null;
+      var scene = (window.Story && Story.scenes && idx != null) ? Story.scenes[idx] : null;
+      return {
+        sceneIndex: idx,
+        sceneId:    scene ? (scene.id || scene.type) : null,
+        sceneType:  scene ? scene.type : null,
+        score:      (window.State && State.scorePercent) ? State.scorePercent() + '%' : null,
+        flags:      (window.State && State.get) ? Object.keys(State.get().flags || {}).join(',') : null,
+      };
+    } catch (e) { return { error: String(e) }; }
+  };
+  // When review mode activates after page load, restart the scene so the gate skips.
+  window.addEventListener('reviewmode:activated', function () {
+    try {
+      if (typeof State !== 'undefined') { State.setFlag('unlocked'); }
+    } catch (e) {}
+  });
+</script>
+<script src="js/review-mode.js"></script>
 </body>
 </html>
