@@ -3,389 +3,527 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Superlike &#11088;</title>
+  <title>Superlike ⭐</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
     body {
-      font-family: Georgia, 'Times New Roman', serif;
-      background: #080812;
-      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f2f4;
       display: flex; flex-direction: column;
+      align-items: center;
+      color: #363636;
+      user-select: none; -webkit-user-select: none;
+    }
+
+    /* ── Top bar ───────────────────────────────────────────────── */
+    .top-bar {
+      width: 100%; height: 56px;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      position: relative; z-index: 50; flex-shrink: 0;
+    }
+    .tinder-logo { display: flex; align-items: center; gap: 6px; }
+    .tinder-logo svg { width: 30px; height: 30px; }
+    .tinder-logo span {
+      font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em;
+      background: linear-gradient(135deg, #FD267B, #FF6036);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* ── Main area ─────────────────────────────────────────────── */
+    .main {
+      flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      overflow: hidden; position: relative;
-      color: #fff; user-select: none; -webkit-user-select: none;
+      width: 100%; padding: 8px 0 0;
+      min-height: 0; overflow: visible;
     }
-    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .particle { position: absolute; animation: floatUp linear infinite; opacity: 0; pointer-events: none; }
-    @keyframes floatUp {
-      0%   { transform: translateY(105vh) rotate(0deg);   opacity: 0; }
-      8%   { opacity: 0.5; }
-      92%  { opacity: 0.2; }
-      100% { transform: translateY(-60px) rotate(360deg); opacity: 0; }
+
+    /* ── Card ──────────────────────────────────────────────────── */
+    #card-wrapper {
+      position: relative;
+      width: min(92vw, 380px);
     }
-    #game {
-      position: relative; z-index: 10;
-      width: 100%; max-width: 400px;
-      padding: 16px 16px 20px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 20px;
+    .shadow-card {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 100%; border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
     }
-    .logo { font-family: system-ui,sans-serif; font-size: 1.1rem; letter-spacing: 0.14em; font-weight: 300; color: rgba(255,255,255,0.45); text-transform: lowercase; }
-    .logo b { color: #ff4b8b; font-weight: 700; }
-    #stack { position: relative; width: 100%; height: 430px; }
-    .bg-card { position: absolute; inset: 0; border-radius: 22px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); }
-    .bg-card-1 { transform: scale(0.96) translateY(8px);  z-index: 1; }
-    .bg-card-2 { transform: scale(0.92) translateY(16px); z-index: 0; }
+    .shadow-card-1 { transform: scale(0.97) translateY(6px); z-index: 1; }
+    .shadow-card-2 { transform: scale(0.94) translateY(12px); z-index: 0; opacity: 0.7; }
+
     #card {
-      position: absolute; inset: 0;
-      border-radius: 22px; padding: 28px 26px 24px;
+      position: relative; z-index: 5;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+      cursor: grab; touch-action: none;
+      will-change: transform;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; z-index: 2; gap: 10px;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
-      cursor: grab; touch-action: none; will-change: transform;
+      align-items: center;
     }
     #card:active { cursor: grabbing; }
-    .stamp {
-      position: absolute; top: 18px;
-      border: 3px solid; border-radius: 8px;
-      padding: 5px 13px;
-      font-family: system-ui,sans-serif;
-      font-size: 1.2rem; font-weight: 900;
-      letter-spacing: 0.06em; opacity: 0; pointer-events: none;
+
+    /* Photo */
+    .card-image-wrap {
+      width: calc(100% - 32px);
+      margin: 16px 16px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
     }
-    .stamp-nein { left: 16px;  color: #f87171; border-color: #f87171; transform: rotate(-14deg); }
-    .stamp-ja   { right: 16px; color: #4ade80; border-color: #4ade80; transform: rotate(13deg); }
-    .card-num   { position: absolute; top: 14px; right: 18px; font-family: system-ui,sans-serif; font-size: 0.7rem; color: rgba(255,255,255,0.28); }
-    .card-icon  { font-size: 3.6rem; margin-bottom: 4px; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.4)); }
-    .card-title { font-size: 1.55rem; font-weight: bold; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); line-height: 1.25; }
-    .card-sub   { font-size: 0.85rem; color: rgba(255,255,255,0.58); font-style: italic; margin-top: -2px; }
-    .card-body  { font-size: 0.96rem; line-height: 1.72; color: rgba(255,255,255,0.88); max-width: 310px; margin-top: 4px; }
+    #card-image {
+      width: 100%;
+      height: min(38vh, 280px);
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+    }
+
+    /* Progress bar overlaid on photo */
+    .card-progress {
+      position: absolute; top: 8px; left: 8px; right: 8px;
+      display: flex; gap: 3px; z-index: 10;
+    }
+    .prog-seg {
+      flex: 1; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.35);
+      transition: background 0.3s;
+    }
+    .prog-seg.done { background: rgba(255,255,255,0.95); }
+    .prog-seg.active { background: rgba(255,255,255,0.7); }
+
+    /* Stamps on photo */
+    .stamp {
+      position: absolute; top: 40px; z-index: 15;
+      border: 4px solid; border-radius: 8px;
+      padding: 4px 14px;
+      font-size: 2.2rem; font-weight: 900; letter-spacing: 0.06em;
+      opacity: 0; pointer-events: none;
+      text-transform: uppercase;
+    }
+    .stamp-like { right: 16px; color: #46A575; border-color: #46A575; transform: rotate(15deg); }
+    .stamp-nope { left: 16px; color: #D04949; border-color: #D04949; transform: rotate(-15deg); }
+
+    /* Match badge (overlapping photo bottom) */
+    .card-badge {
+      margin-top: -20px;
+      background: #7444C0;
+      color: #fff;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.82rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      z-index: 6;
+      box-shadow: 0 2px 8px rgba(116,68,192,0.3);
+    }
+
+    /* Card text content */
+    .card-content { padding: 10px 18px 16px; text-align: center; width: 100%; }
+    .card-name {
+      font-size: 1.5rem; font-weight: 700; color: #363636;
+      padding-top: 6px; padding-bottom: 3px;
+    }
+    .card-sub {
+      font-size: 0.82rem; color: #757E90;
+      padding-bottom: 6px;
+    }
+    .card-body {
+      font-size: 0.8rem; color: #757E90;
+      line-height: 1.6; max-height: 80px; overflow: hidden;
+    }
+
+    /* ── Action buttons ───────────────────────────────────────── */
+    #actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; padding: 12px 0 16px; flex-shrink: 0;
+    }
+    .action-btn {
+      border: none; border-radius: 50%;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(54,54,54,0.12);
+      transition: transform 0.15s;
+    }
+    .action-btn:active { transform: scale(0.85) !important; }
+    .action-btn:hover { transform: scale(1.06); }
+    .action-btn svg { display: block; }
+    .btn-large { width: 60px; height: 60px; }
+    .btn-mini  { width: 44px; height: 44px; }
+    #btn-nope svg { width: 24px; height: 24px; stroke: #363636; fill: none; stroke-width: 3; stroke-linecap: round; }
+    #btn-star svg { width: 18px; height: 18px; fill: #FFA200; }
+    #btn-like svg { width: 24px; height: 24px; fill: #B644B2; }
+    .btn-gone { visibility: hidden !important; pointer-events: none !important; }
+
+    /* ── Animations ───────────────────────────────────────────── */
+    @keyframes flyRight { to { transform: rotate(18deg) translateX(140vw); opacity: 0; } }
+    @keyframes flyLeft  { to { transform: rotate(-18deg) translateX(-140vw); opacity: 0; } }
+    @keyframes popIn {
+      0%   { transform: scale(0.92); opacity: 0; }
+      60%  { transform: scale(1.015); }
+      100% { transform: scale(1); opacity: 1; }
+    }
     @keyframes shake {
       0%,100% { transform: rotate(0); }
-      14% { transform: rotate(-4deg) translateX(-8px); }
-      30% { transform: rotate( 4deg) translateX( 8px); }
-      46% { transform: rotate(-3deg) translateX(-5px); }
-      62% { transform: rotate( 3deg) translateX( 5px); }
-      78% { transform: rotate(-1.5deg); }
+      15% { transform: rotate(-3deg) translateX(-6px); }
+      30% { transform: rotate(3deg) translateX(6px); }
+      45% { transform: rotate(-2deg) translateX(-4px); }
+      60% { transform: rotate(2deg) translateX(4px); }
+      75% { transform: rotate(-1deg); }
     }
-    @keyframes flyRight { to { transform: rotate(22deg) translateX(140vw); opacity: 0; } }
-    @keyframes flyLeft  { to { transform: rotate(-22deg) translateX(-140vw); opacity: 0; } }
-    @keyframes popIn    { 0% { transform: scale(0.78); opacity: 0; } 55% { transform: scale(1.03); } 100% { transform: scale(1); opacity: 1; } }
-    #card.anim-shake     { animation: shake    0.45s ease; }
-    #card.anim-fly-right { animation: flyRight 0.42s ease forwards; }
-    #card.anim-fly-left  { animation: flyLeft  0.38s ease forwards; }
-    #card.anim-pop-in    { animation: popIn    0.36s ease; }
-    @keyframes burst { 0% { transform:translate(0,0) scale(0.3); opacity:1; } 100% { transform:translate(var(--bx),var(--by)) scale(1.1); opacity:0; } }
-    .burst { position: fixed; pointer-events: none; z-index: 80; animation: burst 0.7s ease-out forwards; font-size: 1.25rem; }
-    #buttons { display: flex; gap: 28px; align-items: center; }
-    .btn { border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; line-height: 1; transition: transform 0.13s, box-shadow 0.13s; }
-    .btn:active { transform: scale(0.87) !important; }
-    #btn-nein { width: 56px; height: 56px; background: rgba(255,255,255,0.06); border: 2px solid rgba(248,113,113,0.42); color: #f87171; box-shadow: 0 4px 18px rgba(248,113,113,0.15); }
-    #btn-nein:hover { transform: scale(1.08); }
-    #btn-ja   { width: 70px; height: 70px; background: linear-gradient(135deg,#ff4b8b,#df1054); color: #fff; box-shadow: 0 8px 28px rgba(255,75,139,0.52); }
-    #btn-ja:hover   { transform: scale(1.10); }
-    #btn-star { width: 56px; height: 56px; background: rgba(255,255,255,0.06); border: 2px solid rgba(96,165,250,0.42); color: #60a5fa; box-shadow: 0 4px 18px rgba(96,165,250,0.15); }
-    #btn-star:hover { transform: scale(1.08); }
-    .btn-gone { visibility: hidden !important; pointer-events: none !important; }
-    #dots { display: flex; gap: 5px; align-items: center; }
-    .dot { height: 5px; border-radius: 3px; background: rgba(255,255,255,0.16); width: 5px; transition: all 0.3s; }
-    .dot.done   { background: rgba(255,75,139,0.5); }
-    .dot.active { background: rgba(255,255,255,0.82); width: 18px; }
+    #card.fly-right { animation: flyRight 0.4s ease forwards; }
+    #card.fly-left  { animation: flyLeft  0.36s ease forwards; }
+    #card.pop-in    { animation: popIn    0.3s ease; }
+    #card.shake     { animation: shake    0.4s ease; }
+
+    /* ── Toast ────────────────────────────────────────────────── */
     #toast {
-      position: fixed; bottom: 108px; left: 50%; transform: translateX(-50%);
-      background: rgba(12,10,32,0.92); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 24px; padding: 10px 22px;
-      font-family: system-ui,sans-serif; font-size: 0.87rem;
-      color: rgba(255,255,255,0.9); z-index: 90; opacity: 0;
-      transition: opacity 0.28s; pointer-events: none;
-      max-width: 280px; text-align: center;
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: #363636; color: #fff;
+      border-radius: 20px; padding: 10px 22px;
+      font-size: 0.82rem; z-index: 90;
+      opacity: 0; transition: opacity 0.25s; pointer-events: none;
+      max-width: 300px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
+
+    /* ── Final screen ─────────────────────────────────────────── */
     #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 200; display: none; }
     #final {
       display: none; position: fixed; inset: 0; z-index: 300;
-      background: rgba(8,8,18,0.97);
+      background: rgba(255,255,255,0.97);
       flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 32px; gap: 18px;
+      text-align: center; padding: 32px; gap: 14px;
     }
     #final.show { display: flex; }
-    .f-icon  { font-size: 5rem; line-height: 1; animation: popIn 0.5s ease; }
-    .f-title { font-size: 1.8rem; font-weight: bold; color: #ffd700; text-shadow: 0 0 38px rgba(255,215,0,0.45); }
-    .f-body  { font-size: 1.02rem; line-height: 1.78; color: rgba(255,255,255,0.88); max-width: 300px; }
-    .f-sub   { font-size: 0.83rem; color: rgba(255,255,255,0.35); font-family: system-ui,sans-serif; letter-spacing: 0.09em; margin-top: 4px; }
+    .f-icon  { font-size: 4.5rem; animation: popIn 0.5s ease; }
+    .f-title { font-size: 1.6rem; font-weight: 700; color: #7444C0; }
+    .f-body  { font-size: 0.95rem; line-height: 1.75; color: #363636; max-width: 300px; }
+    .f-sub   { font-size: 0.75rem; color: #757E90; letter-spacing: 0.08em; margin-top: 4px; }
     #btn-replay {
-      margin-top: 8px; padding: 12px 30px;
-      background: linear-gradient(135deg,#ff4b8b,#df1054);
-      color: #fff; border: none; border-radius: 28px;
-      font-family: system-ui,sans-serif; font-size: 0.88rem; font-weight: 600;
-      cursor: pointer; box-shadow: 0 8px 26px rgba(255,75,139,0.45);
+      margin-top: 10px; padding: 14px 32px;
+      background: linear-gradient(135deg, #FD267B, #FF6036);
+      color: #fff; border: none; border-radius: 30px;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 6px 20px rgba(253,38,123,0.3);
       transition: transform 0.13s;
     }
     #btn-replay:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
-<div id="particles"></div>
-<canvas id="confetti"></canvas>
-<div id="game">
-  <div class="logo">super<b>like</b> &#11088;</div>
-  <div id="stack">
-    <div class="bg-card bg-card-2"></div>
-    <div class="bg-card bg-card-1"></div>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <div class="tinder-logo">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C8.5 6 4 9.5 4 14.5C4 18.64 7.58 22 12 22C16.42 22 20 18.64 20 14.5C20 9.5 15.5 6 12 2Z" fill="url(#flame)"/>
+      <path d="M12 18C10.34 18 9 16.66 9 15C9 13.34 10.5 12 12 10C13.5 12 15 13.34 15 15C15 16.66 13.66 18 12 18Z" fill="#fff"/>
+      <defs><linearGradient id="flame" x1="12" y1="2" x2="12" y2="22">
+        <stop offset="0%" stop-color="#FD267B"/>
+        <stop offset="100%" stop-color="#FF6036"/>
+      </linearGradient></defs>
+    </svg>
+    <span>superlike</span>
+  </div>
+</div>
+
+<!-- Main area -->
+<div class="main">
+  <div id="card-wrapper">
+    <div class="shadow-card shadow-card-2"></div>
+    <div class="shadow-card shadow-card-1"></div>
     <div id="card">
-      <span class="stamp stamp-nein" id="stamp-nein">NEIN</span>
-      <span class="stamp stamp-ja"   id="stamp-ja">JA &#9829;</span>
-      <span class="card-num"   id="card-num"></span>
-      <span class="card-icon"  id="card-icon"></span>
-      <div  class="card-title" id="card-title"></div>
-      <div  class="card-sub"   id="card-sub"></div>
-      <div  class="card-body"  id="card-body"></div>
+      <div class="card-image-wrap">
+        <div class="card-progress" id="progress"></div>
+        <span class="stamp stamp-nope" id="stamp-nope">NOPE</span>
+        <span class="stamp stamp-like" id="stamp-like">LIKE</span>
+        <img id="card-image" src="" alt="">
+      </div>
+      <div class="card-badge" id="card-badge"></div>
+      <div class="card-content">
+        <div class="card-name" id="card-name"></div>
+        <div class="card-sub" id="card-sub"></div>
+        <div class="card-body" id="card-body"></div>
+      </div>
     </div>
   </div>
-  <div id="buttons">
-    <button id="btn-nein" class="btn">&#10005;</button>
-    <button id="btn-ja"   class="btn">&#9829;</button>
-    <button id="btn-star" class="btn">&#11088;</button>
-  </div>
-  <div id="dots"></div>
 </div>
+
+<!-- Action buttons -->
+<div id="actions">
+  <button class="action-btn btn-mini" id="btn-star">
+    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+  </button>
+  <button class="action-btn btn-large" id="btn-nope">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <button class="action-btn btn-large" id="btn-like">
+    <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+  </button>
+</div>
+
 <div id="toast"></div>
+<canvas id="confetti"></canvas>
+
+<!-- Final screen -->
 <div id="final">
-  <div class="f-icon">&#128141;</div>
-  <div class="f-title">1 Jahr verheiratet</div>
+  <div class="f-icon">💍</div>
+  <div class="f-title">It's a Match! 💜</div>
   <div class="f-body">
     Alles begann mit einem Superlike.<br><br>
-    Du bist die sch&ouml;nste Entscheidung meines Lebens.<br>
-    Ich w&uuml;rde dich jederzeit wieder <em>superliked</em>.<br><br>
-    F&uuml;r immer dein. &#9829;
+    Du bist die schönste Entscheidung meines Lebens.<br>
+    Ich würde dich jederzeit wieder <em>superliked</em>.<br><br>
+    Für immer dein. ♥
   </div>
-  <div class="f-sub">04.10.2016 &rarr; heute &rarr; f&uuml;r immer</div>
-  <button id="btn-replay">&#8617; Nochmal von vorne</button>
+  <div class="f-sub">04.10.2016 → heute → für immer</div>
+  <button id="btn-replay">↩ Nochmal von vorne</button>
 </div>
+
 <script>
 (function () {
+  // ── Photos (placeholders) ────────────────────────────────────────────────
+  var PHOTO_HER = "data:image/svg+xml," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="380" height="340" viewBox="0 0 380 340">' +
+    '<defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f8e8f0"/><stop offset="100%" stop-color="#e8d0e8"/></linearGradient></defs>' +
+    '<rect width="380" height="340" fill="url(#bg1)"/>' +
+    '<circle cx="190" cy="130" r="55" fill="#f5d6a8"/>' +
+    '<ellipse cx="190" cy="85" rx="58" ry="50" fill="#f0c75e"/>' +
+    '<path d="M138 90 C135 55 165 38 190 36 C215 38 245 55 242 90" fill="#f0c75e"/>' +
+    '<path d="M135 90 C132 140 145 180 148 188" fill="#f0c75e"/>' +
+    '<path d="M245 90 C248 140 235 180 232 188" fill="#f0c75e"/>' +
+    '<circle cx="175" cy="128" r="4" fill="#4a3728"/><circle cx="205" cy="128" r="4" fill="#4a3728"/>' +
+    '<path d="M180 152 Q190 162 200 152" stroke="#d07070" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+    '<path d="M150 210 Q150 195 168 188 L212 188 Q230 195 230 210 L230 320 Q220 335 190 335 Q160 335 150 320 Z" fill="#e8547a"/>' +
+    '<text x="190" y="325" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.3)" font-family="sans-serif">📷 Vicky — Foto einfügen</text>' +
+    '</svg>'
+  );
+  var PHOTO_HIM = "data:image/svg+xml," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="380" height="340" viewBox="0 0 380 340">' +
+    '<defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#e0eaf5"/><stop offset="100%" stop-color="#c8d8f0"/></linearGradient></defs>' +
+    '<rect width="380" height="340" fill="url(#bg2)"/>' +
+    '<circle cx="190" cy="130" r="55" fill="#e8c9a0"/>' +
+    '<ellipse cx="190" cy="85" rx="52" ry="44" fill="#5c3a1a"/>' +
+    '<path d="M144 98 C142 70 168 55 190 54 C212 55 238 70 236 98" fill="#5c3a1a"/>' +
+    '<path d="M146 98 C145 88 150 84 158 88 L158 108 Z" fill="#5c3a1a"/>' +
+    '<path d="M234 98 C235 88 230 84 222 88 L222 108 Z" fill="#5c3a1a"/>' +
+    '<circle cx="175" cy="128" r="4" fill="#2d1f14"/><circle cx="205" cy="128" r="4" fill="#2d1f14"/>' +
+    '<path d="M180 155 Q190 164 200 155" stroke="#a06050" stroke-width="2" fill="none" stroke-linecap="round"/>' +
+    '<path d="M155 205 Q155 192 172 185 L208 185 Q225 192 225 205 L225 320 Q215 335 190 335 Q165 335 155 320 Z" fill="#2c5282"/>' +
+    '<rect x="185" y="185" width="10" height="65" fill="#c0392b"/>' +
+    '<text x="190" y="325" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.3)" font-family="sans-serif">📷 Tom — Foto einfügen</text>' +
+    '</svg>'
+  );
+  var PHOTO_BOTH = "data:image/svg+xml," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="380" height="340" viewBox="0 0 380 340">' +
+    '<defs><linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0e8f8"/><stop offset="100%" stop-color="#e0e8f8"/></linearGradient></defs>' +
+    '<rect width="380" height="340" fill="url(#bg3)"/>' +
+    '<circle cx="145" cy="140" r="40" fill="#e8c9a0"/>' +
+    '<ellipse cx="145" cy="108" rx="36" ry="30" fill="#5c3a1a"/>' +
+    '<circle cx="134" cy="138" r="3" fill="#2d1f14"/><circle cx="156" cy="138" r="3" fill="#2d1f14"/>' +
+    '<path d="M138 156 Q145 163 152 156" stroke="#a06050" stroke-width="1.5" fill="none" stroke-linecap="round"/>' +
+    '<path d="M112 200 Q112 190 126 184 L164 184 Q178 190 178 200 L178 290 Q170 300 145 300 Q120 300 112 290 Z" fill="#2c5282"/>' +
+    '<circle cx="235" cy="140" r="40" fill="#f5d6a8"/>' +
+    '<ellipse cx="235" cy="106" rx="42" ry="35" fill="#f0c75e"/>' +
+    '<path d="M198 108 C196 78 218 65 235 64 C252 65 274 78 272 108" fill="#f0c75e"/>' +
+    '<path d="M196 108 C194 135 202 160 204 165 Z" fill="#f0c75e"/>' +
+    '<path d="M274 108 C276 135 268 160 266 165 Z" fill="#f0c75e"/>' +
+    '<circle cx="224" cy="138" r="3" fill="#4a3728"/><circle cx="246" cy="138" r="3" fill="#4a3728"/>' +
+    '<path d="M228 158 Q235 165 242 158" stroke="#d07070" stroke-width="1.5" fill="none" stroke-linecap="round"/>' +
+    '<path d="M205 200 Q205 190 218 184 L252 184 Q265 190 265 200 L265 290 Q258 300 235 300 Q212 300 205 290 Z" fill="#e8547a"/>' +
+    '<text x="190" y="325" text-anchor="middle" font-size="11" fill="rgba(0,0,0,0.3)" font-family="sans-serif">📷 Paarfoto einfügen</text>' +
+    '</svg>'
+  );
+
+  var PHOTOS = [PHOTO_HIM, PHOTO_HIM, PHOTO_BOTH, PHOTO_BOTH, PHOTO_BOTH,
+                PHOTO_BOTH, PHOTO_HIM, PHOTO_HIM, PHOTO_HIM, PHOTO_HER,
+                PHOTO_BOTH, PHOTO_BOTH, PHOTO_BOTH];
+
   var CARDS = [
-    { icon: '\uD83D\uDCF1', bg: 'linear-gradient(145deg,#12103a,#241863,#1e153d)',
-      title: '2016', sub: 'Eine Geschichte beginnt\u2026',
-      body: 'Tinder. Ein Wisch nach rechts.\nEin paar Chats, nichts Ernstes.\n\nDann \u2014 ein Superlike.' },
-    { icon: '\uD83C\uDF93', bg: 'linear-gradient(145deg,#101828,#1c3557,#0f2644)',
-      title: 'Das Foto', sub: 'Zeugnisvergabe',
-      body: 'Er \u2014 grinsend wie ein Honigkuchenpferd.\nHemd, Hosentr\u00e4ger, Fliege.\n\n\u201eToo interessant, um ihn vorbeizuwischen.\u201c \u2014 Vicky' },
-    { icon: '\uD83D\uDCAC', bg: 'linear-gradient(145deg,#0a1f1f,#0d4040,#113030)',
-      title: '1.000+ Nachrichten', sub: 'In wenigen Tagen',
-      body: 'Lieblingsfilme, peinliche Geschichten,\ndie gro\u00dfen und kleinen Fragen des Lebens.\n\nJedes Mal wenn das Handy leuchtete \u2014 ein Grinsen.' },
-    { icon: '\uD83E\uDD5E', bg: 'linear-gradient(145deg,#22102e,#4a1c6a,#311548)',
-      title: 'Das erste Date', sub: 'Friedrichstra\u00dfe, Kanal',
-      body: 'Ein \u00f6sterreichisches Brunch-Restaurant.\nNur ein schnelles Fr\u00fchst\u00fcck.\n\nAus einer Stunde wurden acht.' },
-    { icon: '\u2600\uFE0F', bg: 'linear-gradient(145deg,#2a1800,#6b3800,#8a4f00)',
-      title: 'Berlin zu zweit', sub: 'Burritos \u00b7 Eis \u00b7 Museumsinsel',
-      body: 'Die Sonne schien.\nSie lernte f\u00fcr eine Klausur.\nEr fragte ab.\n\nIrgendwann lag sie in seinem Arm.' },
-    { icon: '\uD83D\uDC8B', bg: 'linear-gradient(145deg,#2a0618,#78113a,#950c2e)',
-      title: 'Der Abschiedskuss', sub: 'An der U-Bahn',
-      body: 'Spontan. Kurz.\nAber unmissverst\u00e4ndlich.\n\nEine klare Botschaft:\nIch will mehr.' },
-    { icon: '\uD83C\uDF27\uFE0F', bg: 'linear-gradient(145deg,#111118,#1e1e2e,#2a2a3e)',
-      title: 'Die schwere Zeit', sub: 'Tempelhofer Feld',
-      body: 'Mamas Gesundheit. Krakau.\nEine Beziehung f\u00fchlte sich\nwie eine Last an.\n\nSchweren Herzens. Aber das Schicksal hatte andere Pl\u00e4ne.' },
-    { icon: '\uD83E\uDD2B', bg: 'linear-gradient(145deg,#08080f,#100d25,#180f30)',
-      title: '14 Tage Stille', sub: 'Jenjas Verbot',
-      body: 'Kein Anruf. Keine Nachricht. Nichts.\n\nSie muss selbst erkennen, was sie will. \u2014 Jenja\n\nInnerlich: Diese Frau ist zu besonders.' },
-    { icon: '\uD83D\uDCE6', bg: 'linear-gradient(145deg,#1c0e00,#562400,#7a3200)',
-      title: 'Surprise Enterprise AG', sub: 'Ein Zeichen setzen',
-      body: 'Briefe. Eine frische Rose.\nIhr Lieblingsgetr\u00e4nk.\nLukas in der blauen Regenjacke als Kurier.\n\nVickys Vater \u00f6ffnete die T\u00fcr. \uD83D\uDE04' },
-    { icon: '\u23F3', bg: 'linear-gradient(145deg,#001810,#00391e,#004d28)',
-      title: 'Die l\u00e4ngste Wartezeit', sub: 'Stundenlang \u2014 kein Zeichen',
-      body: 'Er wusste genau, wann das Paket ankam.\nJede Sekunde eine Ewigkeit.\n\nDann, endlich \u2014 ihre Nachricht.\nDas Herz ber\u00fchrt.' },
-    { icon: '\uD83C\uDF42', bg: 'linear-gradient(145deg,#281000,#6a2800,#8a3c00)',
-      title: '4. Oktober 2016', sub: 'Ein Restaurant, stundenlang',
-      body: 'Stundenlange Gespr\u00e4che.\nDer Elefant im Raum \u2014\ndoch keiner sprach ihn aus.\n\nBis sie auf der Couch sa\u00dfen.' },
-    { icon: '\uD83D\uDC91', bg: 'linear-gradient(145deg,#001e10,#004a26,#006638)',
-      title: 'Lass es uns versuchen.', sub: '04.10.2016 \u2014 Offiziell',
-      body: 'Drei Worte, die alles ver\u00e4nderten.\n\nWas mit einem Superlike begann,\nnahm Umwege \u2014 und f\u00fchrte zur\nsch\u00f6nsten Entscheidung zweier Leben.' },
-    { icon: '\uD83D\uDC8D', bg: 'linear-gradient(145deg,#1a1400,#3d3200,#5c4c00)',
-      title: '1 Jahr verheiratet', sub: 'F\u00fcr immer \u2665',
-      body: 'Alles begann mit einem Superlike.\n\nAlles Liebe zum ersten Jahrestag,\nmein Schatz. \uD83E\uDD42',
+    { year: '2016', name: 'Eine Geschichte beginnt…', sub: 'Tinder · Berlin',
+      body: 'Ein Wisch nach rechts. Ein paar Chats, nichts Ernstes.\nDann — ein Superlike.' },
+    { year: '2016', name: 'Das Foto', sub: 'Zeugnisvergabe',
+      body: 'Er — grinsend wie ein Honigkuchenpferd.\nHemd, Hosenträger, Fliege.\n\n„Too interessant, um ihn vorbeizuwischen." — Vicky' },
+    { year: '2016', name: '1.000+ Nachrichten', sub: 'In wenigen Tagen',
+      body: 'Lieblingsfilme, peinliche Geschichten,\ndie großen und kleinen Fragen des Lebens.\n\nJedes Mal wenn das Handy leuchtete — ein Grinsen.' },
+    { year: '2016', name: 'Das erste Date', sub: 'Friedrichstraße · Kanal',
+      body: 'Ein österreichisches Brunch-Restaurant.\nNur ein schnelles Frühstück.\n\nAus einer Stunde wurden acht.' },
+    { year: '2016', name: 'Berlin zu zweit', sub: 'Burritos · Eis · Museumsinsel',
+      body: 'Die Sonne schien.\nSie lernte für eine Klausur.\nEr fragte ab.\n\nIrgendwann lag sie in seinem Arm.' },
+    { year: '2016', name: 'Der Abschiedskuss', sub: 'An der U-Bahn',
+      body: 'Spontan. Kurz.\nAber unmissverständlich.\n\nEine klare Botschaft:\nIch will mehr.' },
+    { year: '2016', name: 'Die schwere Zeit', sub: 'Tempelhofer Feld',
+      body: 'Mamas Gesundheit. Krakau.\nEine Beziehung fühlte sich\nwie eine Last an.\n\nSchweren Herzens. Aber das Schicksal hatte andere Pläne.' },
+    { year: '2016', name: '14 Tage Stille', sub: 'Jenjas Verbot',
+      body: 'Kein Anruf. Keine Nachricht. Nichts.\n\n„Sie muss selbst erkennen, was sie will." — Jenja\n\nInnerlich: Diese Frau ist zu besonders.' },
+    { year: '2016', name: 'Surprise Enterprise AG', sub: 'Ein Zeichen setzen',
+      body: 'Briefe. Eine frische Rose.\nIhr Lieblingsgetränk.\nLukas in der blauen Regenjacke als Kurier.\n\nVickys Vater öffnete die Tür. 😄' },
+    { year: '2016', name: 'Die längste Wartezeit', sub: 'Stundenlang — kein Zeichen',
+      body: 'Er wusste genau, wann das Paket ankam.\nJede Sekunde eine Ewigkeit.\n\nDann, endlich — ihre Nachricht.\nDas Herz berührt.' },
+    { year: 'Oktober 2016', name: '4. Oktober', sub: 'Ein Restaurant · stundenlang',
+      body: 'Stundenlange Gespräche.\nDer Elefant im Raum —\ndoch keiner sprach ihn aus.\n\nBis sie auf der Couch saßen.' },
+    { year: '04.10.2016', name: 'Lass es uns versuchen.', sub: 'Offiziell ♥',
+      body: 'Drei Worte, die alles veränderten.\n\nWas mit einem Superlike begann,\nnahm Umwege — und führte zur\nschönsten Entscheidung zweier Leben.' },
+    { year: '2025', name: '1 Jahr verheiratet', sub: 'Für immer ♥',
+      body: 'Alles begann mit einem Superlike.\n\nAlles Liebe zum ersten Jahrestag,\nmein Schatz. 🥂',
       final: true }
   ];
 
-  var NEIN = [
-    'Das Schicksal l\u00e4sst sich nicht ablehnen \uD83D\uDE04',
-    'Probier es nochmal \u2014 du wei\u00dft was du willst! \uD83D\uDE0F',
-    'Nein ist keine Option in dieser Geschichte \uD83D\uDCAB',
-    'Komm schon... swipe rechts! \u27A1\uFE0F',
-    'Wirklich? Diesen Moment willst du \u00fcberspringen? \uD83D\uDE09'
+  var NOPE_MSGS = [
+    'Das Schicksal lässt sich nicht ablehnen 😄',
+    'Probier es nochmal — du weißt was du willst! 😏',
+    'Nein ist keine Option in dieser Geschichte 💫',
+    'Komm schon… swipe rechts! ➡️',
+    'Wirklich? Diesen Moment willst du überspringen? 😉'
   ];
 
-  var idx = 0, animating = false, neinCount = 0;
-  var dragStartX = null, dragging = false, dragDx = 0;
-
-  // Particles
-  var pEl = document.getElementById('particles');
-  var gl = ['\uD83D\uDC95','\u2728','\uD83C\uDF1F','\uD83D\uDCAB','\u2665','\u2B50','\uD83C\uDF38','\uD83D\uDC96','\u2726','\u00B7'];
-  for (var pi = 0; pi < 22; pi++) {
-    var p = document.createElement('span');
-    p.className = 'particle';
-    p.textContent = gl[pi % gl.length];
-    p.style.left = (Math.random()*100) + 'vw';
-    p.style.fontSize = (0.7 + Math.random()*0.9) + 'rem';
-    p.style.animationDuration = (9 + Math.random()*13) + 's';
-    p.style.animationDelay = (Math.random()*18) + 's';
-    pEl.appendChild(p);
-  }
+  var idx = 0, animating = false, nopeCount = 0;
+  var dragStartX = 0, dragging = false, dragDx = 0;
+  var cardEl = document.getElementById('card');
 
   function render() {
     var c = CARDS[idx];
-    var card = document.getElementById('card');
-    card.style.background = c.bg;
-    document.getElementById('card-icon').textContent  = c.icon;
-    document.getElementById('card-title').textContent = c.title;
-    document.getElementById('card-sub').textContent   = c.sub;
-    document.getElementById('card-body').innerHTML    = c.body.replace(/\n/g, '<br>');
-    document.getElementById('card-num').textContent   = (idx + 1) + ' / ' + CARDS.length;
-    document.getElementById('stamp-nein').style.opacity = '0';
-    document.getElementById('stamp-ja').style.opacity   = '0';
-    var bN = document.getElementById('btn-nein');
-    var bS = document.getElementById('btn-star');
-    var bJ = document.getElementById('btn-ja');
-    if (c.final) { bJ.innerHTML = '\uD83E\uDD42'; bN.classList.add('btn-gone'); bS.classList.add('btn-gone'); }
-    else         { bJ.innerHTML = '\u2665';        bN.classList.remove('btn-gone'); bS.classList.remove('btn-gone'); }
-    var dots = document.getElementById('dots');
-    dots.innerHTML = '';
+    document.getElementById('card-image').src = PHOTOS[idx % PHOTOS.length];
+    document.getElementById('card-badge').textContent = '⭐ ' + c.year;
+    document.getElementById('card-name').textContent = c.name;
+    document.getElementById('card-sub').textContent = c.sub;
+    document.getElementById('card-body').innerHTML = c.body.replace(/\n/g, '<br>');
+    document.getElementById('stamp-nope').style.opacity = '0';
+    document.getElementById('stamp-like').style.opacity = '0';
+    // Progress
+    var prog = document.getElementById('progress');
+    prog.innerHTML = '';
     for (var i = 0; i < CARDS.length; i++) {
-      var d = document.createElement('div');
-      d.className = 'dot' + (i < idx ? ' done' : i === idx ? ' active' : '');
-      dots.appendChild(d);
+      var seg = document.createElement('div');
+      seg.className = 'prog-seg' + (i < idx ? ' done' : i === idx ? ' active' : '');
+      prog.appendChild(seg);
     }
-    card.classList.remove('anim-pop-in');
-    void card.offsetWidth;
-    card.classList.add('anim-pop-in');
+    // Hide nope/star on final card
+    var bN = document.getElementById('btn-nope');
+    var bS = document.getElementById('btn-star');
+    if (c.final) { bN.classList.add('btn-gone'); bS.classList.add('btn-gone'); }
+    else { bN.classList.remove('btn-gone'); bS.classList.remove('btn-gone'); }
+    cardEl.classList.remove('pop-in'); void cardEl.offsetWidth; cardEl.classList.add('pop-in');
   }
 
   var toastTimer = null;
   function showToast(msg) {
     clearTimeout(toastTimer);
     var el = document.getElementById('toast');
-    el.textContent = msg;
-    el.style.opacity = '1';
+    el.textContent = msg; el.style.opacity = '1';
     toastTimer = setTimeout(function () { el.style.opacity = '0'; }, 2400);
-  }
-
-  function burstHearts(x, y) {
-    var gs = ['\u2665','\uD83D\uDC95','\u2728','\uD83D\uDC96','\u2B50'];
-    [[-55,-75],[-85,-30],[-70,35],[-28,78],[28,-78],[82,-32],[68,38],[30,75]].forEach(function (d) {
-      var h = document.createElement('span');
-      h.className = 'burst';
-      h.textContent = gs[Math.floor(Math.random()*gs.length)];
-      h.style.left = x + 'px'; h.style.top = y + 'px';
-      h.style.setProperty('--bx', d[0] + 'px');
-      h.style.setProperty('--by', d[1] + 'px');
-      document.body.appendChild(h);
-      setTimeout(function () { h.parentNode && h.parentNode.removeChild(h); }, 800);
-    });
   }
 
   function advance(dir) {
     if (animating) return;
     animating = true;
-    var card = document.getElementById('card');
-    document.getElementById(dir === 'right' ? 'stamp-ja' : 'stamp-nein').style.opacity = '1';
-    var r = document.getElementById('btn-ja').getBoundingClientRect();
-    burstHearts(r.left + r.width / 2, r.top + r.height / 2);
-    var cls = dir === 'right' ? 'anim-fly-right' : 'anim-fly-left';
-    var flyDur = dir === 'right' ? 520 : 480; // CSS duration + 100 ms buffer
-    card.classList.add(cls);
+    document.getElementById(dir === 'right' ? 'stamp-like' : 'stamp-nope').style.opacity = '1';
+    var cls = dir === 'right' ? 'fly-right' : 'fly-left';
+    var flyDur = dir === 'right' ? 480 : 440;
+    cardEl.classList.add(cls);
     var done = false;
     function finish() {
       if (done) return; done = true;
-      card.removeEventListener('animationend', onEnd);
-      card.classList.remove(cls);
-      card.style.transform = '';
-      idx++;
-      animating = false;
-      if (idx >= CARDS.length) { celebrate(); }
+      cardEl.removeEventListener('animationend', onEnd);
+      cardEl.classList.remove(cls); cardEl.style.transform = '';
+      idx++; animating = false;
+      if (idx >= CARDS.length) celebrate();
       else { render(); if (CARDS[idx].final) setTimeout(celebrate, 900); }
     }
     var flyName = dir === 'right' ? 'flyRight' : 'flyLeft';
     function onEnd(e) { if (e.animationName === flyName) finish(); }
-    card.addEventListener('animationend', onEnd);
-    setTimeout(finish, flyDur); // fallback: fires even if animationend never fires (mobile)
+    cardEl.addEventListener('animationend', onEnd);
+    setTimeout(finish, flyDur);
   }
 
-  function onNein() {
+  function onNope() {
     if (animating) return;
-    var card = document.getElementById('card');
-    document.getElementById('stamp-nein').style.opacity = '1';
-    card.classList.remove('anim-shake'); void card.offsetWidth;
-    card.classList.add('anim-shake');
+    document.getElementById('stamp-nope').style.opacity = '1';
+    cardEl.classList.remove('shake'); void cardEl.offsetWidth; cardEl.classList.add('shake');
     var done = false;
     function finish() {
       if (done) return; done = true;
-      card.removeEventListener('animationend', onEnd);
-      card.classList.remove('anim-shake');
-      document.getElementById('stamp-nein').style.opacity = '0';
+      cardEl.removeEventListener('animationend', onEnd);
+      cardEl.classList.remove('shake');
+      document.getElementById('stamp-nope').style.opacity = '0';
     }
     function onEnd(e) { if (e.animationName === 'shake') finish(); }
-    card.addEventListener('animationend', onEnd);
-    setTimeout(finish, 600); // CSS shake is 0.45 s; 600 ms fallback for mobile
-    showToast(NEIN[neinCount++ % NEIN.length]);
+    cardEl.addEventListener('animationend', onEnd);
+    setTimeout(finish, 550);
+    showToast(NOPE_MSGS[nopeCount++ % NOPE_MSGS.length]);
   }
 
-  function onJa()   { if (!animating) { if (CARDS[idx].final) celebrate(); else advance('right'); } }
-  function onStar() { if (!animating) { showToast('\u2B50 Superlike!'); advance('right'); } }
+  function onLike() { if (!animating) { if (CARDS[idx].final) celebrate(); else advance('right'); } }
+  function onStar() { if (!animating) { showToast('⭐ Superlike!'); advance('right'); } }
 
-  document.getElementById('btn-nein').addEventListener('click', onNein);
-  document.getElementById('btn-ja').addEventListener('click', onJa);
-  document.getElementById('btn-star').addEventListener('click', onStar);
-  document.getElementById('btn-replay').addEventListener('click', function () {
-    document.getElementById('final').classList.remove('show');
-    idx = 0; neinCount = 0; animating = false; render();
-  });
-
-  var cardEl = document.getElementById('card');
+  // Drag / swipe
   function dragMove(x) {
     if (!dragging || animating) return;
     dragDx = x - dragStartX;
     if (Math.abs(dragDx) < 5) return;
     cardEl.style.transition = 'none';
-    cardEl.style.transform = 'translateX(' + (dragDx*0.55) + 'px) rotate(' + (dragDx*0.055) + 'deg)';
-    document.getElementById('stamp-nein').style.opacity = dragDx < -30 ? Math.min(1, (-dragDx-30)/60) : '0';
-    document.getElementById('stamp-ja').style.opacity   = dragDx >  30 ? Math.min(1,  (dragDx-30)/60) : '0';
+    cardEl.style.transform = 'translateX(' + (dragDx * 0.6) + 'px) rotate(' + (dragDx * 0.05) + 'deg)';
+    document.getElementById('stamp-nope').style.opacity = dragDx < -30 ? Math.min(1, (-dragDx - 30) / 60) : '0';
+    document.getElementById('stamp-like').style.opacity = dragDx > 30 ? Math.min(1, (dragDx - 30) / 60) : '0';
   }
   function dragEnd() {
     if (!dragging) return; dragging = false;
-    cardEl.style.transition = ''; cardEl.style.transform = '';
-    document.getElementById('stamp-nein').style.opacity = '0';
-    document.getElementById('stamp-ja').style.opacity   = '0';
-    if      (dragDx >  90) advance('right');
-    else if (dragDx < -90) onNein();
+    cardEl.style.transition = 'transform 0.3s ease'; cardEl.style.transform = '';
+    document.getElementById('stamp-nope').style.opacity = '0';
+    document.getElementById('stamp-like').style.opacity = '0';
+    if (dragDx > 90) advance('right');
+    else if (dragDx < -90) onNope();
   }
-  cardEl.addEventListener('mousedown',  function (e) { if (!animating) { dragStartX = e.clientX; dragging = true; dragDx = 0; } });
-  window.addEventListener('mousemove',  function (e) { dragMove(e.clientX); });
-  window.addEventListener('mouseup',    dragEnd);
+
+  cardEl.addEventListener('mousedown', function (e) { if (!animating) { dragStartX = e.clientX; dragging = true; dragDx = 0; } });
+  window.addEventListener('mousemove', function (e) { dragMove(e.clientX); });
+  window.addEventListener('mouseup', dragEnd);
   cardEl.addEventListener('touchstart', function (e) { if (!animating) { dragStartX = e.touches[0].clientX; dragging = true; dragDx = 0; } }, { passive: true });
-  window.addEventListener('touchmove',  function (e) { dragMove(e.touches[0].clientX); }, { passive: true });
-  window.addEventListener('touchend',   dragEnd);
-  document.addEventListener('keydown',  function (e) {
-    if (e.key==='ArrowRight'||e.key==='Enter') onJa();
-    if (e.key==='ArrowLeft')  onNein();
-    if (e.key===' ')          onStar();
+  window.addEventListener('touchmove', function (e) { dragMove(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchend', dragEnd);
+
+  // Keyboard
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'Enter') onLike();
+    if (e.key === 'ArrowLeft') onNope();
+    if (e.key === ' ') onStar();
   });
 
+  // Button clicks
+  document.getElementById('btn-nope').addEventListener('click', onNope);
+  document.getElementById('btn-like').addEventListener('click', onLike);
+  document.getElementById('btn-star').addEventListener('click', onStar);
+  document.getElementById('btn-replay').addEventListener('click', function () {
+    document.getElementById('final').classList.remove('show');
+    idx = 0; nopeCount = 0; animating = false; render();
+  });
+
+  // Confetti celebration
   function celebrate() {
     var cv = document.getElementById('confetti');
-    cv.style.display = 'block';
-    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    cv.style.display = 'block'; cv.width = window.innerWidth; cv.height = window.innerHeight;
     var ctx = cv.getContext('2d');
-    var C = ['#ff4b8b','#ffd700','#60a5fa','#4ade80','#a78bfa','#fb923c','#f9a8d4'];
-    var S = ['\u2665','\u2B50','\u2728','\uD83D\uDC95','\uD83C\uDF1F','\u25C6','\u2022'];
+    var C = ['#7444C0','#FFA200','#B644B2','#5028D7','#FD267B','#FF6036','#46A575'];
+    var S = ['♥','⭐','✨','💜','🌟','◆','●'];
     var pcs = [];
-    for (var i = 0; i < 130; i++) pcs.push({ x: Math.random()*cv.width, y: -20-Math.random()*300, vx:(Math.random()-0.5)*4, vy:1.8+Math.random()*3.5, shape:S[~~(Math.random()*S.length)], color:C[~~(Math.random()*C.length)], size:13+Math.random()*14, rot:Math.random()*360, rs:(Math.random()-0.5)*7 });
+    for (var i = 0; i < 120; i++) pcs.push({ x: Math.random()*cv.width, y: -20-Math.random()*300,
+      vx:(Math.random()-0.5)*4, vy:1.8+Math.random()*3.5, shape:S[~~(Math.random()*S.length)],
+      color:C[~~(Math.random()*C.length)], size:12+Math.random()*13, rot:Math.random()*360, rs:(Math.random()-0.5)*7 });
     var fr = 0;
     (function draw() {
       ctx.clearRect(0,0,cv.width,cv.height);
-      pcs.forEach(function(p){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.rot+=p.rs; if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width;} ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.color; ctx.font=p.size+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(p.shape,0,0); ctx.restore(); });
-      if (++fr < 340) requestAnimationFrame(draw); else cv.style.display='none';
+      pcs.forEach(function(p){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.04; p.rot+=p.rs;
+        if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width;}
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color; ctx.font=p.size+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(p.shape,0,0); ctx.restore(); });
+      if (++fr < 320) requestAnimationFrame(draw); else cv.style.display='none';
     })();
-    setTimeout(function() { document.getElementById('final').classList.add('show'); }, 1200);
+    setTimeout(function () { document.getElementById('final').classList.add('show'); }, 1200);
   }
 
   render();
