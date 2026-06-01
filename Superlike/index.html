@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Superlike ⭐</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div id="landscape-block">
+  <div class="rotate-icon">📱</div>
+  <p>Bitte dreh dein Handy ins Hochformat</p>
+</div>
+<div id="game">
+  <header class="header" id="header">
+    <svg class="header-flame" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C8.5 6 4 9.5 4 14.5C4 18.64 7.58 22 12 22C16.42 22 20 18.64 20 14.5C20 9.5 15.5 6 12 2Z" fill="url(#fl)"/>
+      <path d="M12 18C10.34 18 9 16.66 9 15C9 13.34 10.5 12 12 10C13.5 12 15 13.34 15 15C15 16.66 13.66 18 12 18Z" fill="#fff"/>
+      <defs><linearGradient id="fl" x1="12" y1="2" x2="12" y2="22"><stop stop-color="#FD267B"/><stop offset="1" stop-color="#FF6036"/></linearGradient></defs>
+    </svg>
+    <span class="header-title">superlike</span>
+    <div class="header-actions">
+      <button id="btn-mute" class="header-btn" title="Musik an/aus" aria-label="Musik an/aus">🔊</button>
+      <button id="btn-exit" class="header-btn" title="Spiel beenden" aria-label="Spiel beenden">✕</button>
+    </div>
+    <div class="progress-bar" id="progress-bar"></div>
+  </header>
+  <main id="scene"></main>
+</div>
+<canvas id="confetti"></canvas>
+<canvas id="matrix-rain"></canvas>
+<div id="effects-layer"></div>
+<div id="toast-el"></div>
+<div id="horror-vignette"></div>
+<div id="exit-overlay" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-icon">🚪</div>
+    <div class="modal-title">Spiel beenden?</div>
+    <div class="modal-body">Dein Fortschritt geht verloren.<br>Bist du sicher?</div>
+    <div class="modal-actions">
+      <button id="exit-cancel" class="choice-btn"><span class="emoji">↩️</span> Weiterspielen</button>
+      <button id="exit-confirm" class="choice-btn danger"><span class="emoji">🚪</span> Beenden</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/story.js"></script>
+<script src="js/state.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>
