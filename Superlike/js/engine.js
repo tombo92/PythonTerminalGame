@@ -178,7 +178,8 @@
         start();
       }}, variant);
     }
-    if (isUnlocked() || State.hasFlag('unlocked')) {
+    // Review mode: skip the PIN gate so reviewers don't need credentials.
+    if (window.__reviewBypassGate || isUnlocked() || State.hasFlag('unlocked')) {
       State.setFlag('unlocked');
       showTitle();
     } else {
@@ -448,4 +449,11 @@
   wireHeader();
   renderCurrent();
   updateProgress();
+
+  // Expose a tiny surface so the review module can re-render the gate
+  // after activating mid-session.
+  window.Engine = { renderCurrent: renderCurrent };
+  window.addEventListener('reviewmode:activated', function () {
+    try { renderCurrent(); } catch (e) {}
+  });
 })();
