@@ -16,10 +16,20 @@ dugeon game
 from abc import ABC
 import time
 import emoji
-from pynput import keyboard
 from colorama import Fore, Style
 from GeneralGame.helper_functions import clear_terminal, rainbow_str, replace_character
 from GeneralGame.icons import Icons
+
+# pynput hooks the OS keyboard, which needs a local session with a display.
+# The game is also played through a web terminal and over SSH, where no such
+# device exists and importing this used to abort the whole game on startup.
+# It is therefore optional, with a typed-command fallback below.
+try:
+    from pynput import keyboard
+    _HAS_KEYBOARD = True
+except Exception:  # ImportError, or no display to attach to
+    keyboard = None
+    _HAS_KEYBOARD = False
 
 
 # =========================================================================== #
@@ -168,14 +178,50 @@ class Dungeon:
         self._exit_open: bool = False
         self._puzzle_solved: bool = False
 
+    def _read_direction(self) -> str | None:
+        """Return 'up'/'down'/'left'/'right', 'quit', or None to ignore.
+
+        Uses real key events when a keyboard can be hooked, and falls back
+        to typed lines everywhere else (web terminal, SSH, containers).
+        """
+        if _HAS_KEYBOARD:
+            with keyboard.Events() as events:
+                event = events.get(1e6)
+            mapping = {
+                keyboard.Key.up: "up",
+                keyboard.Key.down: "down",
+                keyboard.Key.left: "left",
+                keyboard.Key.right: "right",
+                keyboard.Key.esc: "quit",
+            }
+            return mapping.get(getattr(event, "key", None))
+
+        try:
+            raw = input("> ").strip().lower()
+        except EOFError:
+            return "quit"
+        return {
+            "w": "up", "up": "up",
+            "s": "down", "down": "down",
+            "a": "left", "left": "left",
+            "d": "right", "right": "right",
+            "q": "quit", "quit": "quit", "exit": "quit",
+        }.get(raw)
+
     def start_quest(self) -> bool:
         rainbow: bool = False
         self._draw_dungeon()
-        print("\nUse the arrow keys to move.")
+        if _HAS_KEYBOARD:
+            print("\nUse the arrow keys to move.")
+        else:
+            print("\nType w/a/s/d (or up/down/left/right) and press Enter to move.")
         while not self._puzzle_solved:
-            with keyboard.Events() as events:
-                event = events.get(1e6)
-            if event.key == keyboard.Key.up:
+            direction = self._read_direction()
+            if direction is None:
+                continue
+            if direction == "quit":
+                return False
+            if direction == "up":
                 self._pursued.move(y_shift=-1)
                 if self._pursued.opend_exit and not self._exit_open:
                     rainbow = False
@@ -185,11 +231,11 @@ class Dungeon:
                 elif self._pursued.y <= 23 and self._persecuter.y >= 38:
                     self._persecuter.x = 36
                     self._persecuter.y = 36
-            elif event.key == keyboard.Key.down:
+            elif direction == "down":
                 self._pursued.move(y_shift=1)
-            elif event.key == keyboard.Key.left:
+            elif direction == "left":
                 self._pursued.move(x_shift=-1)
-            elif event.key == keyboard.Key.right:
+            elif direction == "right":
                 self._pursued.move(x_shift=1)
                 if (self._pursued.x, self._pursued.y) == (47, 23) and not rainbow:
                     rainbow: bool = True
